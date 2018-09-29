@@ -31,7 +31,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Atividade" asp-action="Index">Atividades</a></li>                    
+                    <li><a asp-area="" asp-controller="Atividade" asp-action="Index">Atividades</a></li>
                 </ul>
                 <partial name="_LoginPartial" />
             </div>
@@ -39,6 +39,7 @@
     </nav>
 
     <partial name="_CookieConsentPartial" />
+    <partial name="Message" />
 
     <div class="container body-content">
         @RenderBody()
@@ -68,6 +69,12 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
+
+    <script>
+        $(".fecha-msg").click(function (e) {
+            $(".mensagem").remove();
+        });
+    </script>
 
     @RenderSection("Scripts", required: false)
 </body>

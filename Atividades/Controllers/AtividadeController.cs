@@ -26,7 +26,7 @@ namespace Atividades.Controllers
             using (SqlConnection conexao = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
             {
                 IEnumerable<Atividade> ativs = conexao.Query<Atividade>("Select * from Atividade");
-
+                                
                 return View(ativs);
             }            
             
@@ -34,19 +34,18 @@ namespace Atividades.Controllers
         [HttpPost]
         public IActionResult Add(Atividade atividade)
         {
-            using (SqlConnection conexao = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-            {                
-                try
-                {                    
-                    var query = "INSERT INTO Atividade(Descricao, Setor) VALUES(@Descricao, @Setor); SELECT CAST(SCOPE_IDENTITY() as INT);";
-                    conexao.Execute(query,atividade);
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }                
-                return RedirectToAction("Index");
-            }
+
+            string insert = SQL.AtividadeSQL.Insert(atividade);
+
+            
+            TempData["Message"] = insert;
+            return RedirectToAction("Index");
+            
+            //return RedirectToAction("Index");            
+            
+            
+            
+            
         }
         [HttpGet]
         public IActionResult Add()

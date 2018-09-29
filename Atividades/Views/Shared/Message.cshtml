@@ -1,0 +1,11 @@
+﻿
+@if (@TempData["Message"] != null)
+{
+    <div class="mensagem" style="padding: 10px 20px; background: rgb(243, 156, 18); z-index: 999999; font-size: 16px; font-weight: 600;">
+        <a class="pull-right fecha-msg" href="#" data-toggle="tooltip" data-placement="left" title="" style="color: rgb(255, 255, 255); font-size: 16px;" data-original-title="Fechar!">&times;</a>
+        <i class="icon fa fa-ban"></i>
+        <i class="icon fa fa-check"></i>        
+        @TempData["Message"]
+
+    </div>
+}
