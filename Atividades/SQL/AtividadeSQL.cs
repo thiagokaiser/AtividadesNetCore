@@ -35,7 +35,7 @@ namespace Atividades.SQL
                     {
                         var query = "INSERT INTO Atividade(Descricao, Setor) VALUES(@Descricao, @Setor); SELECT CAST(SCOPE_IDENTITY() as INT);";
                         conexao.Execute(query, atividade);
-                        mensagem = "Atividade adicionada com sucesso";
+                        mensagem = "Atividade adicionada com sucessot";
                     }
                     catch (Exception ex)
                     {
