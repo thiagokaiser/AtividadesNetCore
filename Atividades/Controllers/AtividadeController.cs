@@ -33,19 +33,10 @@ namespace Atividades.Controllers
         }
         [HttpPost]
         public IActionResult Add(Atividade atividade)
-        {
-
-            string insert = SQL.AtividadeSQL.Insert(atividade);
-
-            
+        {            
+            string insert = Banco.AtividadeCRUD.Insert(atividade);            
             TempData["Message"] = insert;
-            return RedirectToAction("Index");
-            
-            //return RedirectToAction("Index");            
-            
-            
-            
-            
+            return RedirectToAction("Index");            
         }
         [HttpGet]
         public IActionResult Add()
@@ -64,20 +55,9 @@ namespace Atividades.Controllers
         [HttpPost]
         public IActionResult Excluir(Atividade atividade)
         {
-            using (SqlConnection conexao = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-            {
-                try
-                {                    
-                    var query = "DELETE FROM Atividade WHERE Id =" + atividade.Id;
-                    conexao.Execute(query);                    
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                return RedirectToAction("Index");
-
-            }
+            string delete = Banco.AtividadeCRUD.Delete(atividade);
+            TempData["Message"] = delete;            
+            return RedirectToAction("Index");
         }
         [HttpGet]
         public IActionResult Detalhe(int id)
