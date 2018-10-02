@@ -9,11 +9,36 @@ using Microsoft.AspNetCore.Authorization;
 using Dapper;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace Atividades.Banco
 {
     public class AtividadeCRUD
-    {        
+    {       
+        public static IEnumerable<Atividade> Select()
+        {
+            string strconexao = StrConexao.GetString("SQL");
+                        
+            using (SqlConnection conexao = new SqlConnection(strconexao))
+            {
+                IEnumerable<Atividade> ativs = conexao.Query<Atividade>("Select * from Atividade");
+                return ativs;
+            }
+            
+        }
+
+        public static Atividade SelectById(int id)
+        {
+            string strconexao = StrConexao.GetString("SQL");
+
+            using (SqlConnection conexao = new SqlConnection(strconexao))
+            {
+                Atividade ativ = conexao.QueryFirst<Atividade>("Select * from Atividade WHERE Id = @Id", new { Id = id });
+                return ativ;
+            }
+
+        }
+
         public static string Insert(Atividade atividade)
         {
             string strconexao = StrConexao.GetString("SQL");
@@ -44,12 +69,46 @@ namespace Atividades.Banco
             {
                 return mensagem;
             }
-        }        
-        public static string Delete(Atividade atividade)
+        }     
+        
+        public static string Update(Atividade atividade)
         {
             string strconexao = StrConexao.GetString("SQL");
             string mensagem = "";
 
+            mensagem = AtividadeCRUD.ValidaUpdate(atividade);
+            
+            if (mensagem == "")
+            {
+                using (SqlConnection conexao = new SqlConnection(strconexao))
+                {
+                    try
+                    {
+                        var query = @"Update Atividade Set 
+                                      Descricao = @Descricao,
+                                      Setor     = @Setor
+                                      Where Id = @Id";
+                        conexao.Execute(query, atividade);
+                        mensagem = "Atividade alterada com sucesso";
+                    }
+                    catch (Exception ex)
+                    {
+                        mensagem = ex.ToString();
+                    }
+                    return mensagem;
+                }
+            }
+            else
+            {
+                return mensagem;
+            }
+        }
+
+        public static string Delete(Atividade atividade)
+        {
+            string strconexao = StrConexao.GetString("SQL");
+            string mensagem = "";
+                        
             mensagem = AtividadeCRUD.ValidaDelete(atividade);                        
             if (mensagem == "")
             {
@@ -78,14 +137,20 @@ namespace Atividades.Banco
             string mensagem = "";            
             if (atividade.Descricao == "asd")
             {
-                mensagem = "para de fazer merda";
-            }
-
+                mensagem = "erro ao alterar";
+            }            
             return mensagem;
         }
         private static string ValidaDelete(Atividade atividade)
         {
             string mensagem = "";
+            Atividade ativ = Banco.AtividadeCRUD.SelectById(atividade.Id);
+            if (ativ.Descricao.TrimEnd() == "zxc")
+            {
+                mensagem = "erro ao eliminar";
+
+            }
+            
             return mensagem;
         }
     }

@@ -22,14 +22,9 @@ namespace Atividades.Controllers
             _config = configuration;
         }
         public IActionResult Index()
-        {
-            using (SqlConnection conexao = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-            {
-                IEnumerable<Atividade> ativs = conexao.Query<Atividade>("Select * from Atividade");
-                                
-                return View(ativs);
-            }            
-            
+        {            
+            IEnumerable<Atividade> ativs = Banco.AtividadeCRUD.Select();          
+            return View(ativs);            
         }
         [HttpPost]
         public IActionResult Add(Atividade atividade)
@@ -46,11 +41,8 @@ namespace Atividades.Controllers
         [HttpGet]
         public IActionResult Excluir(int id)
         {
-            using (SqlConnection conexao = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-            {                
-                Atividade ativ = conexao.QueryFirst<Atividade>("Select * from Atividade WHERE Id = @Id", new { Id = id });
-                return View(ativ);                
-            }
+            Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
+            return View(ativs);
         }
         [HttpPost]
         public IActionResult Excluir(Atividade atividade)
@@ -62,41 +54,22 @@ namespace Atividades.Controllers
         [HttpGet]
         public IActionResult Detalhe(int id)
         {
-            using (SqlConnection conexao = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-            {
-                Atividade ativ = conexao.QueryFirst<Atividade>("Select * from Atividade WHERE Id = @Id", new { Id = id });
-                return View(ativ);
-            }
+            Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
+            return View(ativs);
         }
         [HttpGet]
         public IActionResult Editar(int id)
         {
-            using (SqlConnection conexao = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-            {
-                Atividade ativ = conexao.QueryFirst<Atividade>("Select * from Atividade WHERE Id = @Id", new { Id = id });
-                return View(ativ);
-            }
+            Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
+            return View(ativs);
         }
         [HttpPost]
         public IActionResult Editar(Atividade atividade)
         {
-            using (SqlConnection conexao = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-            {
-                try
-                {
-                    var query = @"Update Atividade Set 
-                                  Descricao = @Descricao,
-                                  Setor     = @Setor
-                                  Where Id = @Id";
-                    conexao.Execute(query, atividade);
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                return RedirectToAction("Index");
+            string ativ = Banco.AtividadeCRUD.Update(atividade);
+            TempData["Message"] = ativ;
+            return RedirectToAction("Index");
 
-            }
         }
     }
 }

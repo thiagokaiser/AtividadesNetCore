@@ -13,7 +13,7 @@ namespace Atividades.Banco
             switch (banco)
             {
                 case "SQL":
-                    strconexao = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Atividades;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+                    strconexao = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AtividadesDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
                     break;
                 case "Mongo":
                     strconexao = "";
