@@ -29,7 +29,7 @@ namespace Atividades.Controllers
         [HttpPost]
         public IActionResult Add(Atividade atividade)
         {            
-            string insert = Banco.AtividadeCRUD.Insert(atividade);            
+            string insert = Banco.AtividadeCRUD.Insert(atividade);
             TempData["Message"] = insert;
             return RedirectToAction("Index");            
         }
@@ -40,7 +40,7 @@ namespace Atividades.Controllers
         }
         [HttpGet]
         public IActionResult Excluir(int id)
-        {
+        {            
             Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
             return View(ativs);
         }

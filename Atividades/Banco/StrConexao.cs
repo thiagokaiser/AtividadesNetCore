@@ -7,19 +7,23 @@ namespace Atividades.Banco
 {
     public class StrConexao
     {
-        public static string GetString(string banco)
+        public static string[] GetString()
         {
-            string strconexao = "";
+            string banco = "SQL";
+            string[] strconexao = new string[2];
+
+            strconexao[0] = banco;
+
             switch (banco)
             {
                 case "SQL":
-                    strconexao = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AtividadesDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+                    strconexao[1] = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AtividadesDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
                     break;
                 case "Mongo":
-                    strconexao = "";
+                    strconexao[1] = "mongodb://localhost";
                     break;                
-            }            
+            }                 
             return strconexao;
-        }        
+        }                
     }
 }

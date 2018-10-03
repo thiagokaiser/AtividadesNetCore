@@ -14,124 +14,99 @@ using System.Reflection;
 namespace Atividades.Banco
 {
     public class AtividadeCRUD
-    {       
+    {
+        public interface teste
+        {
+
+        }
         public static IEnumerable<Atividade> Select()
         {
-            string strconexao = StrConexao.GetString("SQL");
-                        
-            using (SqlConnection conexao = new SqlConnection(strconexao))
+            string[] strconexao = StrConexao.GetString();        
+
+            IEnumerable<Atividade> ativs;
+
+            if (strconexao[0] == "Mongo")
             {
-                IEnumerable<Atividade> ativs = conexao.Query<Atividade>("Select * from Atividade");
-                return ativs;
+                ativs = AtividadeMongo.Select(strconexao[1]);
             }
-            
+            else
+            {
+                ativs = AtividadeSQL.Select(strconexao[1]);
+            }            
+
+            return ativs;
         }
 
         public static Atividade SelectById(int id)
         {
-            string strconexao = StrConexao.GetString("SQL");
+            string[] strconexao = StrConexao.GetString();
 
-            using (SqlConnection conexao = new SqlConnection(strconexao))
+            Atividade ativ;
+
+            if (strconexao[0] == "Mongo")
             {
-                Atividade ativ = conexao.QueryFirst<Atividade>("Select * from Atividade WHERE Id = @Id", new { Id = id });
-                return ativ;
+                ativ = AtividadeMongo.SelectById(strconexao[1], id);
+            }
+            else
+            {
+                ativ = AtividadeSQL.SelectById(strconexao[1],id);
             }
 
+            return ativ;
         }
 
         public static string Insert(Atividade atividade)
         {
-            string strconexao = StrConexao.GetString("SQL");
-            string mensagem = "";            
+            string[] strconexao = StrConexao.GetString();
+            string mensagem = "";
 
-            mensagem = AtividadeCRUD.ValidaUpdate(atividade);
-            
-            if (mensagem == "")
-            {                
-                using (SqlConnection conexao = new SqlConnection(strconexao))
-                {
-                    try
-                    {
-                        var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  Categoria) 
-                                                    VALUES(@Descricao,@Responsavel, @Setor, @Categoria); 
-                                      SELECT CAST(SCOPE_IDENTITY() as INT);";
-                        conexao.Execute(query, atividade);
-                        mensagem = "Atividade adicionada com sucesso";
-                    }
-                    catch (Exception ex)
-                    {
-                        mensagem = ex.ToString();
-                    }                    
-                    return mensagem;
-                }
+            if (strconexao[0] == "Mongo")
+            {
+                mensagem = AtividadeMongo.Insert(strconexao[1], atividade);
+                
             }
             else
             {
-                return mensagem;
+                mensagem = AtividadeSQL.Insert(strconexao[1], atividade);
             }
+
+            return mensagem;
         }     
         
         public static string Update(Atividade atividade)
         {
-            string strconexao = StrConexao.GetString("SQL");
+            string[] strconexao = StrConexao.GetString();
             string mensagem = "";
 
-            mensagem = AtividadeCRUD.ValidaUpdate(atividade);
-            
-            if (mensagem == "")
+            if (strconexao[0] == "Mongo")
             {
-                using (SqlConnection conexao = new SqlConnection(strconexao))
-                {
-                    try
-                    {
-                        var query = @"Update Atividade Set 
-                                      Descricao = @Descricao,
-                                      Setor     = @Setor
-                                      Where Id = @Id";
-                        conexao.Execute(query, atividade);
-                        mensagem = "Atividade alterada com sucesso";
-                    }
-                    catch (Exception ex)
-                    {
-                        mensagem = ex.ToString();
-                    }
-                    return mensagem;
-                }
+                mensagem = AtividadeMongo.Update(strconexao[1], atividade);
             }
             else
             {
-                return mensagem;
+                mensagem = AtividadeSQL.Update(strconexao[1], atividade);
             }
+
+            return mensagem;
         }
 
         public static string Delete(Atividade atividade)
         {
-            string strconexao = StrConexao.GetString("SQL");
+            string[] strconexao = StrConexao.GetString();
             string mensagem = "";
-                        
-            mensagem = AtividadeCRUD.ValidaDelete(atividade);                        
-            if (mensagem == "")
+
+            if (strconexao[0] == "Mongo")
             {
-                using (SqlConnection conexao = new SqlConnection(strconexao))
-                {
-                    try
-                    {                        
-                        var query = "DELETE FROM Atividade WHERE Id =" + atividade.Id;
-                        conexao.Execute(query);
-                        mensagem = "Atividade eliminada com sucesso";
-                    }
-                    catch (Exception ex)
-                    {
-                        mensagem = ex.ToString();
-                    }
-                    return mensagem;
-                }
+                mensagem = AtividadeMongo.Delete(strconexao[1], atividade);
             }
             else
             {
-                return mensagem;
+                mensagem = AtividadeSQL.Delete(strconexao[1], atividade);
             }
+
+            return mensagem;
         }
+
         private static string ValidaUpdate(Atividade atividade)
         {
             string mensagem = "";            
@@ -143,9 +118,8 @@ namespace Atividades.Banco
         }
         private static string ValidaDelete(Atividade atividade)
         {
-            string mensagem = "";
-            Atividade ativ = Banco.AtividadeCRUD.SelectById(atividade.Id);
-            if (ativ.Descricao.TrimEnd() == "zxc")
+            string mensagem = "";            
+            if (atividade.Descricao.TrimEnd() == "zxc")
             {
                 mensagem = "erro ao eliminar";
 
