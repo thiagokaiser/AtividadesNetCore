@@ -35,68 +35,82 @@ namespace Atividades.Banco
 
         public static string Insert(string strconexao, Atividade atividade)
         {            
-            string mensagem = "";                                   
-            using (SqlConnection conexao = new SqlConnection(strconexao))
+            string mensagem = "";
+
+            mensagem = AtividadeSQL.ValidaUpdate(atividade);
+            if (mensagem == "")
             {
-                try
+                using (SqlConnection conexao = new SqlConnection(strconexao))
                 {
-                    var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  Categoria) 
-                                                VALUES(@Descricao,@Responsavel, @Setor, @Categoria); 
-                                    SELECT CAST(SCOPE_IDENTITY() as INT);";
-                    conexao.Execute(query, atividade);
-                    mensagem = "Atividade adicionada com sucesso";
+                    try
+                    {
+                        var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  Categoria) 
+                                                    VALUES(@Descricao,@Responsavel, @Setor, @Categoria); 
+                                        SELECT CAST(SCOPE_IDENTITY() as INT);";
+                        conexao.Execute(query, atividade);
+                        mensagem = "Atividade adicionada com sucesso";
+                    }
+                    catch (Exception ex)
+                    {
+                        mensagem = ex.ToString();
+                    }                    
                 }
-                catch (Exception ex)
-                {
-                    mensagem = ex.ToString();
-                }                    
-                return mensagem;
             }            
+            return mensagem;
         }             
         public static string Update(string strconexao, Atividade atividade)
         {
             string mensagem = "";
-            using (SqlConnection conexao = new SqlConnection(strconexao))
+            mensagem = AtividadeSQL.ValidaUpdate(atividade);
+            if (mensagem == "")
             {
-                try
+                using (SqlConnection conexao = new SqlConnection(strconexao))
                 {
-                    var query = @"Update Atividade Set 
-                                    Descricao = @Descricao,
-                                    Setor     = @Setor
-                                    Where Id = @Id";
-                    conexao.Execute(query, atividade);
-                    mensagem = "Atividade alterada com sucesso";
+                    try
+                    {
+                        var query = @"Update Atividade Set 
+                                        Descricao = @Descricao,
+                                        Setor     = @Setor
+                                        Where Id = @Id";
+                        conexao.Execute(query, atividade);
+                        mensagem = "Atividade alterada com sucesso";
+                    }
+                    catch (Exception ex)
+                    {
+                        mensagem = ex.ToString();
+                    }                    
                 }
-                catch (Exception ex)
-                {
-                    mensagem = ex.ToString();
-                }
-                return mensagem;
-            }            
+            }
+            return mensagem;
         }
 
         public static string Delete(string strconexao, Atividade atividade)
         {            
-            string mensagem = "";                        
-            using (SqlConnection conexao = new SqlConnection(strconexao))
+            string mensagem = "";
+
+            mensagem = AtividadeSQL.ValidaDelete(atividade);
+            if (mensagem == "")
             {
-                try
-                {                        
-                    var query = "DELETE FROM Atividade WHERE Id =" + atividade.Id;
-                    conexao.Execute(query);
-                    mensagem = "Atividade eliminada com sucesso";
-                }
-                catch (Exception ex)
+                using (SqlConnection conexao = new SqlConnection(strconexao))
                 {
-                    mensagem = ex.ToString();
+                    try
+                    {
+                        var query = "DELETE FROM Atividade WHERE Id =" + atividade.Id;
+                        conexao.Execute(query);
+                        mensagem = "Atividade eliminada com sucesso";
+                    }
+                    catch (Exception ex)
+                    {
+                        mensagem = ex.ToString();
+                    }                    
                 }
-                return mensagem;
-            }            
+            }
+            return mensagem;
         }
         private static string ValidaUpdate(Atividade atividade)
         {
             string mensagem = "";            
-            if (atividade.Descricao == "asd")
+            if (atividade.Descricao.TrimEnd() == "asd")
             {
                 mensagem = "erro ao alterar";
             }            
