@@ -32,13 +32,13 @@ namespace Atividades.Banco
 
         }
 
-        public static Atividade SelectById(string strconexao, int id)
+        public static Atividade SelectById(string strconexao, string id)
         {
             var client = new MongoClient(strconexao);
             var database = client.GetDatabase("test");
             var collection = database.GetCollection<Atividade>("atividades");
-            var ativ = collection.Find(new BsonDocument()).ToList();
-
+            var filter = Builders<Atividade>.Filter.Eq("id", id);
+            var ativ = collection.Find(filter).FirstOrDefault();
             return ativ;
 
 

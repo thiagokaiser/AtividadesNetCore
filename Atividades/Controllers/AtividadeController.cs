@@ -39,7 +39,7 @@ namespace Atividades.Controllers
             return View();                     
         }
         [HttpGet]
-        public IActionResult Excluir(int id)
+        public IActionResult Excluir(string id)
         {            
             Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
             return View(ativs);
@@ -52,13 +52,13 @@ namespace Atividades.Controllers
             return RedirectToAction("Index");
         }
         [HttpGet]
-        public IActionResult Detalhe(int id)
+        public IActionResult Detalhe(string id)
         {
             Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
             return View(ativs);
         }
         [HttpGet]
-        public IActionResult Editar(int id)
+        public IActionResult Editar(string id)
         {
             Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
             return View(ativs);

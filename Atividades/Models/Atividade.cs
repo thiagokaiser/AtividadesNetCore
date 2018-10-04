@@ -12,7 +12,7 @@ namespace Atividades.Models
     {        
         [Key]
         [BsonId()]
-        public ObjectId Id { get; set; }
+        public string Id { get; set; }
 
         public string Descricao { get; set; }
 

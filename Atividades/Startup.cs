@@ -12,6 +12,11 @@ using Microsoft.EntityFrameworkCore;
 using Atividades.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Atividades.Models;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Atividades
 {
@@ -41,6 +46,14 @@ namespace Atividades
                 .AddEntityFrameworkStores<ApplicationDbContext>();            
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            BsonClassMap.RegisterClassMap<Atividade>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapIdProperty(c => c.Id)
+                    .SetIdGenerator(StringObjectIdGenerator.Instance)
+                    .SetSerializer(new StringSerializer(BsonType.ObjectId));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -37,7 +37,7 @@ namespace Atividades.Banco
             return ativs;
         }
 
-        public static Atividade SelectById(int id)
+        public static Atividade SelectById(string id)
         {
             string[] strconexao = StrConexao.GetString();
 
@@ -105,27 +105,6 @@ namespace Atividades.Banco
             }
 
             return mensagem;
-        }
-
-        private static string ValidaUpdate(Atividade atividade)
-        {
-            string mensagem = "";            
-            if (atividade.Descricao == "asd")
-            {
-                mensagem = "erro ao alterar";
-            }            
-            return mensagem;
-        }
-        private static string ValidaDelete(Atividade atividade)
-        {
-            string mensagem = "";            
-            if (atividade.Descricao.TrimEnd() == "zxc")
-            {
-                mensagem = "erro ao eliminar";
-
-            }
-            
-            return mensagem;
-        }
+        }        
     }
 }
