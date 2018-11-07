@@ -20,7 +20,10 @@ namespace Atividades.Models
 
         public string Setor { get; set; }
 
-        public string Categoria { get; set; }        
+        public string Categoria { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime Data { get; set; }
 
     }
 }

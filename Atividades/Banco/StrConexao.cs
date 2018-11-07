@@ -9,7 +9,7 @@ namespace Atividades.Banco
     {
         public static string[] GetString()
         {
-            string banco = "Mongo";
+            string banco = "SQL";
             string[] strconexao = new string[2];
 
             strconexao[0] = banco;

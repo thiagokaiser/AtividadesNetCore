@@ -29,34 +29,40 @@
             <th>
                 Categoria
             </th>
+            <th>
+                Data
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @item.Id
-                </td>
-                <td>
-                    @item.Descricao
-                </td>
-                <td>
-                    @item.Responsavel
-                </td>
-                <td>
-                    @item.Setor
-                </td>
-                <td>
-                    @item.Categoria
-                </td>
-                <td>
-                    @Html.ActionLink("Editar", "Editar", new { id=item.Id  }) |
-                    @Html.ActionLink("Detalhe", "Detalhe", new { id = item.Id }) |
-                    @Html.ActionLink("Excluir", "Excluir", new { id=item.Id })
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @item.Id
+            </td>
+            <td>
+                @item.Descricao
+            </td>
+            <td>
+                @item.Responsavel
+            </td>
+            <td>
+                @item.Setor
+            </td>
+            <td>
+                @item.Categoria
+            </td>
+            <td>
+                @item.Data
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Editar", new { id = item.Id }) |
+                @Html.ActionLink("Detalhe", "Detalhe", new { id = item.Id }) |
+                @Html.ActionLink("Excluir", "Excluir", new { id = item.Id })
+            </td>
+        </tr>
         }
     </tbody>
 </table>

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Dapper;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System.Net.Mail;
+using System.Net;
 
 namespace Atividades.Controllers
 {   
@@ -70,6 +72,30 @@ namespace Atividades.Controllers
             TempData["Message"] = ativ;
             return RedirectToAction("Index");
 
+        }
+
+        public IActionResult EnviaEmail()
+        {            
+            
+            MailMessage msg = new MailMessage();
+            msg.To.Add(new MailAddress("thiago.kaiser@danicazipco.com.br", "thiago"));
+            msg.From = new MailAddress("site@danicazipco.com.br", "site");
+            msg.Subject = "This is a Test Mail";
+            msg.Body = "This is a test message using Exchange";
+            msg.IsBodyHtml = true;
+
+            SmtpClient client = new SmtpClient();
+            client.UseDefaultCredentials = false;
+            client.Credentials = new System.Net.NetworkCredential("site@danicazipco.com.br", "Ert@4321");
+            client.Port = 587; // You can use Port 25 if 587 is blocked (mine is!)
+            client.Host = "smtp.office365.com";
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            client.EnableSsl = true;
+            
+            client.Send(msg);                
+            
+            TempData["Message"] = "Email enviado";
+            return RedirectToAction("Index");
         }
     }
 }
