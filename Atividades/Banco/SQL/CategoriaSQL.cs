@@ -10,49 +10,45 @@ using Dapper;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Atividades.Banco
 {
-    public class AtividadeSQL
+    public class CategoriaSQL
     {       
-        public static IEnumerable<Atividade> Select(string strconexao)
+        public static IEnumerable<Categoria> Select(string strconexao)
         {                        
             using (SqlConnection conexao = new SqlConnection(strconexao))
             {
-                IEnumerable<Atividade> ativs = conexao.Query<Atividade, Categoria, Atividade>(@"
-                        Select * from Atividade T1 INNER JOIN Categoria T2 ON T1.CategoriaId = T2.Id",
-                        (Atividade, Categoria) => {
-                            Atividade.Categoria = Categoria;
-                            return Atividade;
-                        }).Distinct().ToList(); 
-                return ativs;
+                IEnumerable<Categoria> categ = conexao.Query<Categoria>("Select * from Categoria");
+                return categ;
             }            
         }
 
-        public static Atividade SelectById(string strconexao, string id)
+        public static Categoria SelectById(string strconexao, string id)
         {
             using (SqlConnection conexao = new SqlConnection(strconexao))
             {
-                Atividade ativ = conexao.QueryFirst<Atividade>("Select * from Atividade WHERE Id = @Id", new { Id = id });
-                return ativ;
+                Categoria categ = conexao.QueryFirst<Categoria>("Select * from Categoria WHERE Id = @Id", new { Id = id });
+                return categ;
             }
         }
 
-        public static string Insert(string strconexao, Atividade atividade)
+        public static string Insert(string strconexao, Categoria categ)
         {            
             string mensagem = "";
 
-            mensagem = AtividadeSQL.ValidaUpdate(atividade);
+            mensagem = CategoriaSQL.ValidaUpdate(categ);
             if (mensagem == "")
             {
                 using (SqlConnection conexao = new SqlConnection(strconexao))
                 {
                     try
                     {
-                        var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  CategoriaId, Data) 
-                                                    VALUES(@Descricao,@Responsavel, @Setor, @CategoriaId, @Data); 
+                        var query = @"INSERT INTO Categoria(Descricao, Cor) 
+                                                    VALUES(@Descricao,@Cor); 
                                         SELECT CAST(SCOPE_IDENTITY() as INT);";
-                        conexao.Execute(query, atividade);
+                        conexao.Execute(query, categ);
                         mensagem = "Atividade adicionada com sucesso";
                     }
                     catch (Exception ex)
@@ -63,24 +59,21 @@ namespace Atividades.Banco
             }            
             return mensagem;
         }             
-        public static string Update(string strconexao, Atividade atividade)
+        public static string Update(string strconexao, Categoria categ)
         {
             string mensagem = "";
-            mensagem = AtividadeSQL.ValidaUpdate(atividade);
+            mensagem = CategoriaSQL.ValidaUpdate(categ);
             if (mensagem == "")
             {
                 using (SqlConnection conexao = new SqlConnection(strconexao))
                 {
                     try
                     {
-                        var query = @"Update Atividade Set 
-                                        Descricao   = @Descricao,
-                                        Responsavel = @Responsavel,
-                                        Setor       = @Setor,
-                                        CategoriaId = @CategoriaId,
-                                        Data        = @Data
+                        var query = @"Update Categoria Set 
+                                        Descricao = @Descricao,
+                                        Cor       = @Cor                                        
                                         Where Id = @Id";
-                        conexao.Execute(query, atividade);
+                        conexao.Execute(query, categ);
                         mensagem = "Atividade alterada com sucesso";
                     }
                     catch (Exception ex)
@@ -92,18 +85,18 @@ namespace Atividades.Banco
             return mensagem;
         }
 
-        public static string Delete(string strconexao, Atividade atividade)
+        public static string Delete(string strconexao, Categoria categ)
         {            
             string mensagem = "";
 
-            mensagem = AtividadeSQL.ValidaDelete(atividade);
+            mensagem = CategoriaSQL.ValidaDelete(categ);
             if (mensagem == "")
             {
                 using (SqlConnection conexao = new SqlConnection(strconexao))
                 {
                     try
                     {
-                        var query = "DELETE FROM Atividade WHERE Id =" + atividade.Id;
+                        var query = "DELETE FROM Categoria WHERE Id =" + categ.Id;
                         conexao.Execute(query);
                         mensagem = "Atividade eliminada com sucesso";
                     }
@@ -115,34 +108,41 @@ namespace Atividades.Banco
             }
             return mensagem;
         }
-        private static string ValidaUpdate(Atividade atividade)
+        private static string ValidaUpdate(Categoria categ)
         {
             string mensagem = "";            
-            if (atividade.Descricao?.TrimEnd() == "asd")
+            if (categ.Descricao?.TrimEnd() == "asd")
             {
                 mensagem = "erro ao alterar";
             }
-            
-            //Validacao para evitar erro no SQL
-            if (atividade.Data <= new DateTime(1800, 01, 01) || atividade.Data >= new DateTime(2100, 01, 01))
-            {
-                mensagem = "Data deve estar entra 01/01/1800 e 01/01/2100";
-            }
-
-
             return mensagem;
         }
-        private static string ValidaDelete(Atividade atividade)
+        private static string ValidaDelete(Categoria categ)
         {
             string mensagem = "";
             string[] strconexao = StrConexao.GetString();
-            Atividade ativ = AtividadeSQL.SelectById(strconexao[1], atividade.Id);
-            if (ativ.Descricao?.TrimEnd() == "zxc")
+            Categoria categoria = CategoriaSQL.SelectById(strconexao[1], categ.Id);
+            if (categoria.Descricao?.TrimEnd() == "zxc")
             {
                 mensagem = "erro ao eliminar";
 
             }            
             return mensagem;
         }
+        public static List<SelectListItem> GetSelectList()
+        {
+            
+            List<SelectListItem> categs = new List<SelectListItem>();
+
+            IEnumerable<Categoria> categorias = Banco.CategoriaCRUD.Select().ToList();
+            foreach (Categoria categ in categorias)
+            {
+                categs.Add(new SelectListItem { Value = categ.Id.ToString(), Text = categ.Descricao });
+            }
+
+            return categs;
+            
+        }
+
     }
 }

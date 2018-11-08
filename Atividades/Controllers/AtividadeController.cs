@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Net.Mail;
 using System.Net;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Atividades.Controllers
 {   
@@ -38,6 +39,8 @@ namespace Atividades.Controllers
         [HttpGet]
         public IActionResult Add()
         {
+            ViewBag.Categoria = Banco.CategoriaCRUD.GetSelectList();
+
             var model = new Atividade { Data = DateTime.Now };
             return View(model);                     
         }
@@ -63,6 +66,7 @@ namespace Atividades.Controllers
         [HttpGet]
         public IActionResult Editar(string id)
         {
+            ViewBag.Categoria = Banco.CategoriaCRUD.GetSelectList();
             Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
             return View(ativs);
         }

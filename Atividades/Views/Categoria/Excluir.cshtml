@@ -1,4 +1,4 @@
-﻿@model Atividades.Models.Atividade
+﻿@model Atividades.Models.Categoria
 
 @{
     ViewData["Title"] = "Excluir";
@@ -24,29 +24,11 @@
             @Html.DisplayFor(model => model.Descricao)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Responsavel)
+            @Html.DisplayNameFor(model => model.Cor)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Responsavel)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Setor)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Setor)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Categoria)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Categoria)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Data)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Data)
-        </dd>
+            @Html.DisplayFor(model => model.Cor)
+        </dd>        
     </dl>
     
     <form asp-action="Excluir">        

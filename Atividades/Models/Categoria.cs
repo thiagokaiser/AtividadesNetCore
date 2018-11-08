@@ -8,7 +8,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Atividades.Models
 {
-    public class Atividade
+    public class Categoria
     {        
         [Key]
         [BsonId()]
@@ -16,15 +16,7 @@ namespace Atividades.Models
 
         public string Descricao { get; set; }
 
-        public string Responsavel { get; set; }
-
-        public string Setor { get; set; }
-
-        public string CategoriaId { get; set; }
-        public Categoria Categoria { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime Data { get; set; }        
+        public string Cor { get; set; }                
 
     }
 }
