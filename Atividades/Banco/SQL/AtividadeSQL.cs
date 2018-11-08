@@ -44,8 +44,8 @@ namespace Atividades.Banco
                 {
                     try
                     {
-                        var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  Categoria) 
-                                                    VALUES(@Descricao,@Responsavel, @Setor, @Categoria); 
+                        var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  Categoria, Data) 
+                                                    VALUES(@Descricao,@Responsavel, @Setor, @Categoria, @Data); 
                                         SELECT CAST(SCOPE_IDENTITY() as INT);";
                         conexao.Execute(query, atividade);
                         mensagem = "Atividade adicionada com sucesso";
@@ -69,8 +69,11 @@ namespace Atividades.Banco
                     try
                     {
                         var query = @"Update Atividade Set 
-                                        Descricao = @Descricao,
-                                        Setor     = @Setor
+                                        Descricao   = @Descricao,
+                                        Responsavel = @Responsavel,
+                                        Setor       = @Setor,
+                                        Categoria   = @Categoria,
+                                        Data        = @Data
                                         Where Id = @Id";
                         conexao.Execute(query, atividade);
                         mensagem = "Atividade alterada com sucesso";
@@ -110,16 +113,26 @@ namespace Atividades.Banco
         private static string ValidaUpdate(Atividade atividade)
         {
             string mensagem = "";            
-            if (atividade.Descricao.TrimEnd() == "asd")
+            if (atividade.Descricao?.TrimEnd() == "asd")
             {
                 mensagem = "erro ao alterar";
-            }            
+            }
+            
+            //Validacao para evitar erro no SQL
+            if (atividade.Data <= new DateTime(1800, 01, 01) || atividade.Data >= new DateTime(2100, 01, 01))
+            {
+                mensagem = "Data deve estar entra 01/01/1800 e 01/01/2100";
+            }
+
+
             return mensagem;
         }
         private static string ValidaDelete(Atividade atividade)
         {
-            string mensagem = "";            
-            if (atividade.Descricao.TrimEnd() == "zxc")
+            string mensagem = "";
+            string[] strconexao = StrConexao.GetString();
+            Atividade ativ = AtividadeSQL.SelectById(strconexao[1], atividade.Id);
+            if (ativ.Descricao?.TrimEnd() == "zxc")
             {
                 mensagem = "erro ao eliminar";
 

@@ -38,7 +38,8 @@ namespace Atividades.Controllers
         [HttpGet]
         public IActionResult Add()
         {
-            return View();                     
+            var model = new Atividade { Data = DateTime.Now };
+            return View(model);                     
         }
         [HttpGet]
         public IActionResult Excluir(string id)

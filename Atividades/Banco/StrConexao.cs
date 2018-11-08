@@ -18,6 +18,7 @@ namespace Atividades.Banco
             {
                 case "SQL":
                     strconexao[1] = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AtividadesDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+                    //strconexao[1] = "Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = AtividadesDB; Integrated Security = True; Connect Timeout = 30; Encrypt = False; TrustServerCertificate = False; ApplicationIntent = ReadWrite; MultiSubnetFailover = False";
                     break;
                 case "Mongo":
                     strconexao[1] = "mongodb://localhost:27017";
