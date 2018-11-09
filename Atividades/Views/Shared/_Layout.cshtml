@@ -42,13 +42,16 @@
     <partial name="_CookieConsentPartial" />
     <partial name="Message" />
 
-    <div class="container body-content">
+    <div class="container body-content">        
         @RenderBody()
         <hr />
         <footer>
             <p>&copy; 2018 - Atividades</p>
         </footer>
     </div>
+
+    
+
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -73,9 +76,11 @@
     </environment>
 
     <script>
+
         $(".fecha-msg").click(function (e) {
             $(".mensagem").remove();
-        });        
+        });       
+
     </script>
 
     @RenderSection("Scripts", required: false)
