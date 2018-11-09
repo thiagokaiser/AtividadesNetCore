@@ -102,5 +102,10 @@ namespace Atividades.Controllers
             TempData["Message"] = "Email enviado";
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public IActionResult atualizatable(List<string> lista)
+        {            
+            return RedirectToAction("Add");
+        }
     }
 }

@@ -69,6 +69,25 @@
     </tbody>
 </table>
 
-<script>
-    
-</script>
+@section Scripts {
+    <script type="text/javascript">        
+
+        $('#ativs').sortable({
+            axis: 'y',
+            update: function (event, ui) {
+                var data = $(this).sortable('serialize');
+
+                // POST to server using $.post or $.ajax
+                $.ajax({
+                    data: data,
+                    type: 'POST',
+                    url: 'Atividade/atualizatable'
+                    
+                });
+                
+            }
+        });
+        $("#ativs").disableSelection();
+
+    </script>
+}
