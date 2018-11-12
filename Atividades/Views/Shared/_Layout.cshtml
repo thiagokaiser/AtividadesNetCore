@@ -42,9 +42,27 @@
     <partial name="_CookieConsentPartial" />
     <partial name="Message" />
 
-    <div class="container body-content">        
+    <div class="container body-content">
         @RenderBody()
         <hr />
+
+
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="loader"></div>
+            </div>
+        </div>
+        <!--style="display:inline-block;"   -->
+        <div class="modal fade loading-modal" tabindex="-1" role="dialog" id="loadingdiv" data-keyboard="false" data-backdrop="static" style="padding-top: 90px;" >
+            <div class="modal-dialog loading-modal" role="document">
+                <div class="loading-modal">
+                    <div class="loader" style="display:inline-block;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <footer>
             <p>&copy; 2018 - Atividades</p>
         </footer>
@@ -80,6 +98,15 @@
         $(".fecha-msg").click(function (e) {
             $(".mensagem").remove();
         });       
+
+        $(document).on({
+            ajaxStart: function () {
+                $('#loadingdiv').modal();
+            },
+            ajaxStop: function () {
+                $('#loadingdiv').modal("hide");
+            }
+        });
 
     </script>
 

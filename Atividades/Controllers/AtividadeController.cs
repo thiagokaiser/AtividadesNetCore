@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Atividades.Models;
+using Atividades.Classes;
 using Microsoft.AspNetCore.Authorization;
 using Dapper;
 using System.Data.SqlClient;
@@ -46,7 +47,7 @@ namespace Atividades.Controllers
         }
         [HttpGet]
         public IActionResult Excluir(string id)
-        {            
+        {
             Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
             return View(ativs);
         }
@@ -102,10 +103,27 @@ namespace Atividades.Controllers
             TempData["Message"] = "Email enviado";
             return RedirectToAction("Index");
         }
+
+        
+            
+        
+        
+
         [HttpPost]
-        public IActionResult atualizatable(List<string> lista)
-        {            
-            return RedirectToAction("Add");
+        public IActionResult Atualizatable([FromBody] List<JsonPrioridade> lista)
+        {
+            if (lista != null)
+            {
+
+
+
+                return Json("Success");
+            }
+            else
+            {
+                return Json("An Error Has occoured");
+            }
+
         }
     }
 }

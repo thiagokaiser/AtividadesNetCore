@@ -24,7 +24,9 @@ namespace Atividades.Models
         public Categoria Categoria { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime Data { get; set; }        
+        public DateTime Data { get; set; }
+
+        public int Prioridade { get; set; }
 
     }
 }
