@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Atividades.Models;
+using Atividades.Classes;
 using Microsoft.AspNetCore.Authorization;
 using Dapper;
 using System.Data.SqlClient;
@@ -105,6 +106,12 @@ namespace Atividades.Banco
             }
 
             return mensagem;
-        }        
+        }
+        public void AlteraPrioridade(List<JsonPrioridade> lista)
+        {
+
+
+
+        }
     }
 }

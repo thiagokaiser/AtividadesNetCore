@@ -124,12 +124,6 @@ namespace Atividades.Banco
             }
 
             return categ;
-        }
-        public void AlteraPrioridade(List<JsonPrioridade> lista)
-        {
-
-
-
-        }
+        }        
     }
 }
