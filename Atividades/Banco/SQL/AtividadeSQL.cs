@@ -31,11 +31,31 @@ namespace Atividades.Banco
             }            
         }
 
+        public static IEnumerable<Atividade> SelectEncerrados(string strconexao)
+        {
+            using (SqlConnection conexao = new SqlConnection(strconexao))
+            {
+                IEnumerable<Atividade> ativs = conexao.Query<Atividade, Categoria, Atividade>(@"
+                        Select * from Atividade T1 INNER JOIN Categoria T2 ON T1.CategoriaId = T2.Id 
+                        WHERE DataEncerramento IS NOT NULL ORDER BY T1.Prioridade",
+                        (Atividade, Categoria) => {
+                            Atividade.Categoria = Categoria;
+                            return Atividade;
+                        }).Distinct().ToList();
+                return ativs;
+            }
+        }
+
         public static Atividade SelectById(string strconexao, string id)
         {
             using (SqlConnection conexao = new SqlConnection(strconexao))
             {
-                Atividade ativ = conexao.QueryFirst<Atividade>("Select * from Atividade WHERE Id = @Id", new { Id = id });
+                Atividade ativ = conexao.Query<Atividade, Categoria, Atividade>(@"
+                    Select * from Atividade T1 INNER JOIN Categoria T2 ON T1.CategoriaId = T2.Id WHERE T1.Id = @Id",
+                    (Atividade, Categoria) => {
+                        Atividade.Categoria = Categoria;                        
+                        return Atividade;}, new { Id = id }).FirstOrDefault();
+                
                 return ativ;
             }
         }
@@ -106,6 +126,31 @@ namespace Atividades.Banco
                     {
                         var query = @"Update Atividade Set                                         
                                         DataEncerramento = @DataEncerramento
+                                        Where Id = @Id";
+                        conexao.Execute(query, atividade);
+                        mensagem = "Atividade alterada com sucesso";
+                    }
+                    catch (Exception ex)
+                    {
+                        mensagem = ex.ToString();
+                    }
+                }
+            }
+            return mensagem;
+        }
+
+        public static string Reabrir(string strconexao, Atividade atividade)
+        {
+            string mensagem = "";
+            //mensagem = AtividadeSQL.ValidaUpdate(atividade);
+            if (mensagem == "")
+            {
+                using (SqlConnection conexao = new SqlConnection(strconexao))
+                {
+                    try
+                    {
+                        var query = @"Update Atividade Set                                         
+                                        DataEncerramento = NULL
                                         Where Id = @Id";
                         conexao.Execute(query, atividade);
                         mensagem = "Atividade alterada com sucesso";

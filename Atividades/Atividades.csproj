@@ -16,6 +16,12 @@
     <Content Update="Views\Atividade\Editar.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Atividade\Encerrados.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Atividade\Reabrir.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Categoria\Add.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

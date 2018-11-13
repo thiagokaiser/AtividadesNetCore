@@ -30,6 +30,11 @@ namespace Atividades.Controllers
             IEnumerable<Atividade> ativs = Banco.AtividadeCRUD.Select();          
             return View(ativs);            
         }
+        public IActionResult Encerrados()
+        {
+            IEnumerable<Atividade> ativs = Banco.AtividadeCRUD.SelectEncerrados();
+            return View(ativs);
+        }
         [HttpPost]
         public IActionResult Add(Atividade atividade)
         {            
@@ -94,6 +99,21 @@ namespace Atividades.Controllers
             TempData["Message"] = ativ;
             return RedirectToAction("Index");
 
+        }
+
+        [HttpGet]
+        public IActionResult Reabrir(string id)
+        {
+            ViewBag.Categoria = Banco.CategoriaCRUD.GetSelectList();
+            Atividade ativs = Banco.AtividadeCRUD.SelectById(id);            
+            return View(ativs);
+        }
+        [HttpPost]
+        public IActionResult Reabrir(Atividade atividade)
+        {
+            string ativ = Banco.AtividadeCRUD.Reabrir(atividade);
+            TempData["Message"] = ativ;
+            return RedirectToAction("Encerrados");
         }
 
         public IActionResult EnviaEmail()

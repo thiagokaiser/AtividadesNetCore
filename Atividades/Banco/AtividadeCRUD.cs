@@ -38,6 +38,24 @@ namespace Atividades.Banco
             return ativs;
         }
 
+        public static IEnumerable<Atividade> SelectEncerrados()
+        {
+            string[] strconexao = StrConexao.GetString();
+
+            IEnumerable<Atividade> ativs;
+
+            if (strconexao[0] == "Mongo")
+            {
+                ativs = AtividadeMongo.Select(strconexao[1]);
+            }
+            else
+            {
+                ativs = AtividadeSQL.SelectEncerrados(strconexao[1]);
+            }
+
+            return ativs;
+        }
+
         public static Atividade SelectById(string id)
         {
             string[] strconexao = StrConexao.GetString();
@@ -103,6 +121,22 @@ namespace Atividades.Banco
             else
             {
                 mensagem = AtividadeSQL.UpdateEncerra(strconexao[1], atividade);
+            }
+
+            return mensagem;
+        }
+        public static string Reabrir(Atividade atividade)
+        {
+            string[] strconexao = StrConexao.GetString();
+            string mensagem = "";
+
+            if (strconexao[0] == "Mongo")
+            {
+                mensagem = AtividadeMongo.Update(strconexao[1], atividade);
+            }
+            else
+            {
+                mensagem = AtividadeSQL.Reabrir(strconexao[1], atividade);
             }
 
             return mensagem;

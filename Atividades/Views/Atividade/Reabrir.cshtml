@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Encerrar">
+        <form asp-action="Reabrir">
             <div>
                 <h4>Atividade</h4>
                 <hr />
@@ -49,22 +49,19 @@
                         @Html.DisplayNameFor(model => model.DataEncerramento)
                     </dt>
                     <dd>
-                        <div class="form-group">                            
-                            <input asp-for="DataEncerramento" class="form-control" />
-                            <span asp-validation-for="DataEncerramento" class="text-danger"></span>
-                        </div>
+                        @Html.DisplayFor(model => model.DataEncerramento)
                     </dd>
                 </dl>
             </div>
             <div class="form-group">
-                <input type="submit" value="Encerrar" class="btn btn-default" />
+                <input type="submit" value="Reabrir" class="btn btn-default" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Encerrados">Back to List</a>
 </div>
 
 @section Scripts {
