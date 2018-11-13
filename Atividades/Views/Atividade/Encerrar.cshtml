@@ -1,0 +1,72 @@
+﻿@model Atividades.Models.Atividade
+
+@{
+    ViewData["Title"] = "Editar";
+}
+
+<h2>Editar</h2>
+
+<h4>Atividade</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Encerrar">
+            <div>
+                <h4>Atividade</h4>
+                <hr />
+                <dl class="dl-horizontal">                    
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Descricao)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Descricao)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Responsavel)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Responsavel)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Setor)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Setor)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Categoria)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Categoria)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Data)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Data)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.DataEncerramento)
+                    </dt>
+                    <dd>
+                        <div class="form-group">                            
+                            <input asp-for="DataEncerramento" class="form-control" />
+                            <span asp-validation-for="DataEncerramento" class="text-danger"></span>
+                        </div>
+                    </dd>
+                </dl>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

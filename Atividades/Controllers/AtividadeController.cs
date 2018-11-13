@@ -42,7 +42,7 @@ namespace Atividades.Controllers
         {
             ViewBag.Categoria = Banco.CategoriaCRUD.GetSelectList();
 
-            var model = new Atividade { Data = DateTime.Now };
+            var model = new Atividade { Responsavel = "Thiago", Setor = "TI", Data = DateTime.Now };
             return View(model);                     
         }
         [HttpGet]
@@ -79,6 +79,22 @@ namespace Atividades.Controllers
             return RedirectToAction("Index");
 
         }
+        [HttpGet]
+        public IActionResult Encerrar(string id)
+        {
+            ViewBag.Categoria = Banco.CategoriaCRUD.GetSelectList();            
+            Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
+            ativs.DataEncerramento = DateTime.Now;
+            return View(ativs);
+        }
+        [HttpPost]
+        public IActionResult Encerrar(Atividade atividade)
+        {
+            string ativ = Banco.AtividadeCRUD.UpdateEncerra(atividade);
+            TempData["Message"] = ativ;
+            return RedirectToAction("Index");
+
+        }
 
         public IActionResult EnviaEmail()
         {            
@@ -102,26 +118,20 @@ namespace Atividades.Controllers
             
             TempData["Message"] = "Email enviado";
             return RedirectToAction("Index");
-        }
-
-        
-            
-        
-        
+        }        
 
         [HttpPost]
         public IActionResult Atualizatable([FromBody] List<JsonPrioridade> lista)
         {
+            string mensagem = "Error";
             if (lista != null)
             {
-
-
-
-                return Json("Success");
+                mensagem = Banco.AtividadeCRUD.AlteraPrioridade(lista);
+                return Json(mensagem);
             }
             else
             {
-                return Json("An Error Has occoured");
+                return Json(mensagem);
             }
 
         }

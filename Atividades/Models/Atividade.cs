@@ -28,5 +28,7 @@ namespace Atividades.Models
 
         public int Prioridade { get; set; }
 
+        [DataType(DataType.Date)]
+        public DateTime DataEncerramento { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace Atividades.Classes
         
         public string Id { get; set; }
 
-        public string Prioridade { get; set; }
+        public int Prioridade { get; set; }
 
 
     }

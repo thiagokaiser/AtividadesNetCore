@@ -91,6 +91,22 @@ namespace Atividades.Banco
             return mensagem;
         }
 
+        public static string UpdateEncerra(Atividade atividade)
+        {
+            string[] strconexao = StrConexao.GetString();
+            string mensagem = "";
+
+            if (strconexao[0] == "Mongo")
+            {
+                mensagem = AtividadeMongo.Update(strconexao[1], atividade);
+            }
+            else
+            {
+                mensagem = AtividadeSQL.UpdateEncerra(strconexao[1], atividade);
+            }
+
+            return mensagem;
+        }
         public static string Delete(Atividade atividade)
         {
             string[] strconexao = StrConexao.GetString();
@@ -107,11 +123,18 @@ namespace Atividades.Banco
 
             return mensagem;
         }
-        public void AlteraPrioridade(List<JsonPrioridade> lista)
+        public static string AlteraPrioridade(List<JsonPrioridade> lista)
         {
-
-
-
+            string[] strconexao = StrConexao.GetString();
+            string mensagem = "";
+            int priorid = 0;
+            foreach (var item in lista)
+            {
+                priorid += 1;
+                item.Prioridade = priorid;
+                mensagem = AtividadeSQL.AlteraPrioridade(strconexao[1], item);
+            }            
+            return mensagem;
         }
     }
 }

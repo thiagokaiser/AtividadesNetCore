@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Atividades.Models;
+using Atividades.Classes;
 using Microsoft.AspNetCore.Authorization;
 using Dapper;
 using System.Data.SqlClient;
@@ -20,7 +21,8 @@ namespace Atividades.Banco
             using (SqlConnection conexao = new SqlConnection(strconexao))
             {
                 IEnumerable<Atividade> ativs = conexao.Query<Atividade, Categoria, Atividade>(@"
-                        Select * from Atividade T1 INNER JOIN Categoria T2 ON T1.CategoriaId = T2.Id",
+                        Select * from Atividade T1 INNER JOIN Categoria T2 ON T1.CategoriaId = T2.Id 
+                        WHERE DataEncerramento IS NULL ORDER BY T1.Prioridade",
                         (Atividade, Categoria) => {
                             Atividade.Categoria = Categoria;
                             return Atividade;
@@ -48,9 +50,9 @@ namespace Atividades.Banco
                 using (SqlConnection conexao = new SqlConnection(strconexao))
                 {
                     try
-                    {
-                        var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  CategoriaId, Data) 
-                                                    VALUES(@Descricao,@Responsavel, @Setor, @CategoriaId, @Data); 
+                    {                       
+                        var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  CategoriaId, Data,  Prioridade) 
+                                                    VALUES(@Descricao,@Responsavel, @Setor, @CategoriaId, @Data, (Select ISNULL(MAX(Prioridade), 0) from Atividade) + 1); 
                                         SELECT CAST(SCOPE_IDENTITY() as INT);";
                         conexao.Execute(query, atividade);
                         mensagem = "Atividade adicionada com sucesso";
@@ -92,6 +94,31 @@ namespace Atividades.Banco
             return mensagem;
         }
 
+        public static string UpdateEncerra(string strconexao, Atividade atividade)
+        {
+            string mensagem = "";
+            //mensagem = AtividadeSQL.ValidaUpdate(atividade);
+            if (mensagem == "")
+            {
+                using (SqlConnection conexao = new SqlConnection(strconexao))
+                {
+                    try
+                    {
+                        var query = @"Update Atividade Set                                         
+                                        DataEncerramento = @DataEncerramento
+                                        Where Id = @Id";
+                        conexao.Execute(query, atividade);
+                        mensagem = "Atividade alterada com sucesso";
+                    }
+                    catch (Exception ex)
+                    {
+                        mensagem = ex.ToString();
+                    }
+                }
+            }
+            return mensagem;
+        }
+
         public static string Delete(string strconexao, Atividade atividade)
         {            
             string mensagem = "";
@@ -115,6 +142,8 @@ namespace Atividades.Banco
             }
             return mensagem;
         }
+
+
         private static string ValidaUpdate(Atividade atividade)
         {
             string mensagem = "";            
@@ -141,6 +170,27 @@ namespace Atividades.Banco
             {
                 mensagem = "erro ao eliminar";
 
+            }            
+            return mensagem;
+        }
+        public static string AlteraPrioridade(string strconexao, JsonPrioridade prioridade)
+        {
+            string mensagem = "";
+            
+            using (SqlConnection conexao = new SqlConnection(strconexao))
+            {
+                try
+                {
+                    var query = @"Update Atividade Set 
+                                    Prioridade   = @Prioridade                                 
+                                    Where Id = @Id";
+                    conexao.Execute(query, prioridade);
+                    mensagem = "Atividade alterada com sucesso";
+                }
+                catch (Exception ex)
+                {
+                    mensagem = ex.ToString();
+                }
             }            
             return mensagem;
         }
