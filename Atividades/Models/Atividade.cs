@@ -30,5 +30,9 @@ namespace Atividades.Models
 
         [DataType(DataType.Date)]
         public DateTime DataEncerramento { get; set; }
+
+        public string Solicitante { get; set; }
+
+        public string Narrativa { get; set; }
     }
 }
