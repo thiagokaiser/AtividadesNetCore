@@ -46,6 +46,24 @@
         <dd>
             @Html.DisplayFor(model => model.Data)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DataEncerramento)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DataEncerramento)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Solicitante)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Solicitante)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Narrativa)
+        </dt>
+        <dd>
+            @Html.EditorFor(model => model.Narrativa, additionalViewData: new { htmlAttributes = new { @class = "form-control", rows="10" } })                
+        </dd>
     </dl>
 </div>
 <div>

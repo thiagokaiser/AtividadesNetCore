@@ -9,7 +9,7 @@
 <h4>Atividade</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Editar">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -38,10 +38,15 @@
                 <span asp-validation-for="Data" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DataEncerramento" class="control-label"></label>
-                <input asp-for="DataEncerramento" class="form-control" />
-                <span asp-validation-for="DataEncerramento" class="text-danger"></span>
+                <label asp-for="Solicitante" class="control-label"></label>
+                <input asp-for="Solicitante" class="form-control" />
+                <span asp-validation-for="Solicitante" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="Narrativa" class="control-label"></label>                
+                <textarea asp-for="Narrativa" class="form-control" text-wrap:normal type="text" placeholder="Please add your experience here" rows="10"></textarea>
+                <span asp-validation-for="Narrativa" class="text-danger"></span>
+            </div>            
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>

@@ -71,8 +71,9 @@ namespace Atividades.Banco
                 {
                     try
                     {                       
-                        var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  CategoriaId, Data,  Prioridade) 
-                                                    VALUES(@Descricao,@Responsavel, @Setor, @CategoriaId, @Data, (Select ISNULL(MAX(Prioridade), 0) from Atividade) + 1); 
+                        var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  CategoriaId, Data,  Prioridade, Solicitante, Narrativa) 
+                                                    VALUES(@Descricao,@Responsavel, @Setor, @CategoriaId, @Data, (Select ISNULL(MAX(Prioridade), 0) from Atividade) + 1,
+                                                           @Solicitante, @Narrativa); 
                                         SELECT CAST(SCOPE_IDENTITY() as INT);";
                         conexao.Execute(query, atividade);
                         mensagem = "Atividade adicionada com sucesso";
@@ -100,7 +101,9 @@ namespace Atividades.Banco
                                         Responsavel = @Responsavel,
                                         Setor       = @Setor,
                                         CategoriaId = @CategoriaId,
-                                        Data        = @Data
+                                        Data        = @Data,                                        
+                                        Solicitante = @Solicitante,
+                                        Narrativa   = @Narrativa
                                         Where Id = @Id";
                         conexao.Execute(query, atividade);
                         mensagem = "Atividade alterada com sucesso";

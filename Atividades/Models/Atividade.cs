@@ -33,6 +33,7 @@ namespace Atividades.Models
 
         public string Solicitante { get; set; }
 
+        [DataType(DataType.MultilineText)]
         public string Narrativa { get; set; }
     }
 }
