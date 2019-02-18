@@ -27,6 +27,7 @@ namespace Atividades.Controllers
         }
         public IActionResult Index()
         {            
+            ViewBag.teste = "asdddd";
             IEnumerable<Atividade> ativs = Banco.AtividadeCRUD.Select();          
             return View(ativs);            
         }
