@@ -22,17 +22,21 @@ namespace Atividades.Banco
         {
             string[] strconexao = StrConexao.GetString();        
 
-            IEnumerable<Categoria> categ;
+            IEnumerable<Categoria> categ = new List<Categoria> { };
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                //ativs = AtividadeMongo.Select(strconexao[1]);
-                categ = new List<Categoria>();
-            }
-            else
-            {
-                categ = CategoriaSQL.Select(strconexao[1]);
-            }            
+                case "Mongo":
+                    //ativs = AtividadeMongo.Select(strconexao[1]);
+                    categ = new List<Categoria>();
+                    break;
+                case "SQL":
+                    categ = CategoriaSQL.Select(strconexao[1]);
+                    break;
+                case "Postgres":
+                    categ = CategoriaPostgres.Select(strconexao[1]);
+                    break;
+            }           
 
             return categ;
         }
@@ -41,16 +45,19 @@ namespace Atividades.Banco
         {
             string[] strconexao = StrConexao.GetString();
 
-            Categoria categ;
+            Categoria categ = new Categoria { };
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                //ativ = AtividadeMongo.SelectById(strconexao[1], id);
-                categ = new Categoria();
-            }
-            else
-            {
-                categ = CategoriaSQL.SelectById(strconexao[1],id);
+                case "Mongo":
+                    //ativs = AtividadeMongo.Select(strconexao[1]);                    
+                    break;
+                case "SQL":
+                    categ = CategoriaSQL.SelectById(strconexao[1], id);
+                    break;
+                case "Postgres":
+                    categ = CategoriaPostgres.SelectById(strconexao[1], id);
+                    break;
             }
 
             return categ;
@@ -61,15 +68,18 @@ namespace Atividades.Banco
             string[] strconexao = StrConexao.GetString();
             string mensagem = "";
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                //mensagem = AtividadeMongo.Insert(strconexao[1], atividade);
-                
-            }
-            else
-            {
-                mensagem = CategoriaSQL.Insert(strconexao[1], categ);
-            }
+                case "Mongo":
+                    //ativs = AtividadeMongo.Select(strconexao[1]);                    
+                    break;
+                case "SQL":
+                    mensagem = CategoriaSQL.Insert(strconexao[1], categ);
+                    break;
+                case "Postgres":
+                    mensagem = CategoriaPostgres.Insert(strconexao[1], categ);
+                    break;
+            }           
 
             return mensagem;
         }     
@@ -79,14 +89,18 @@ namespace Atividades.Banco
             string[] strconexao = StrConexao.GetString();
             string mensagem = "";
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                //mensagem = AtividadeMongo.Update(strconexao[1], atividade);
-            }
-            else
-            {
-                mensagem = CategoriaSQL.Update(strconexao[1], categ);
-            }
+                case "Mongo":
+                    //ativs = AtividadeMongo.Select(strconexao[1]);                    
+                    break;
+                case "SQL":
+                    mensagem = CategoriaSQL.Update(strconexao[1], categ);
+                    break;
+                case "Postgres":
+                    mensagem = CategoriaPostgres.Update(strconexao[1], categ);
+                    break;
+            }            
 
             return mensagem;
         }
@@ -96,14 +110,18 @@ namespace Atividades.Banco
             string[] strconexao = StrConexao.GetString();
             string mensagem = "";
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                //mensagem = AtividadeMongo.Delete(strconexao[1], atividade);
-            }
-            else
-            {
-                mensagem = CategoriaSQL.Delete(strconexao[1], categ);
-            }
+                case "Mongo":
+                    //ativs = AtividadeMongo.Select(strconexao[1]);                    
+                    break;
+                case "SQL":
+                    mensagem = CategoriaSQL.Delete(strconexao[1], categ);
+                    break;
+                case "Postgres":
+                    mensagem = CategoriaPostgres.Delete(strconexao[1], categ);
+                    break;
+            }           
 
             return mensagem;
         }
@@ -113,15 +131,18 @@ namespace Atividades.Banco
 
             List<SelectListItem> categ = new List<SelectListItem>();
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                //ativs = AtividadeMongo.Select(strconexao[1]);
-                categ = new List<SelectListItem>();
-            }
-            else
-            {
-                categ = CategoriaSQL.GetSelectList();
-            }
+                case "Mongo":
+                    //ativs = AtividadeMongo.Select(strconexao[1]);                    
+                    break;
+                case "SQL":
+                    categ = CategoriaSQL.GetSelectList();
+                    break;
+                case "Postgres":
+                    categ = CategoriaPostgres.GetSelectList();
+                    break;
+            }           
 
             return categ;
         }        

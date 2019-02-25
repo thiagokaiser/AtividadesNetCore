@@ -24,16 +24,20 @@ namespace Atividades.Banco
         {
             string[] strconexao = StrConexao.GetString();        
 
-            IEnumerable<Atividade> ativs;
+            IEnumerable<Atividade> ativs = new List<Atividade> { };            
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                ativs = AtividadeMongo.Select(strconexao[1]);
-            }
-            else
-            {
-                ativs = AtividadeSQL.Select(strconexao[1]);
-            }            
+                case "Mongo":
+                    ativs = AtividadeMongo.Select(strconexao[1]);
+                    break;
+                case "SQL":
+                    ativs = AtividadeSQL.Select(strconexao[1]);
+                    break;
+                case "Postgres":
+                    ativs = AtividadePostgres.Select(strconexao[1]);
+                    break;
+            }           
 
             return ativs;
         }
@@ -42,15 +46,19 @@ namespace Atividades.Banco
         {
             string[] strconexao = StrConexao.GetString();
 
-            IEnumerable<Atividade> ativs;
+            IEnumerable<Atividade> ativs = new List<Atividade> { };
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                ativs = AtividadeMongo.Select(strconexao[1]);
-            }
-            else
-            {
-                ativs = AtividadeSQL.SelectEncerrados(strconexao[1]);
+                case "Mongo":
+                    ativs = AtividadeMongo.Select(strconexao[1]);
+                    break;
+                case "SQL":
+                    ativs = AtividadeSQL.SelectEncerrados(strconexao[1]);
+                    break;
+                case "Postgres":
+                    ativs = AtividadePostgres.SelectEncerrados(strconexao[1]);
+                    break;
             }
 
             return ativs;
@@ -60,15 +68,19 @@ namespace Atividades.Banco
         {
             string[] strconexao = StrConexao.GetString();
 
-            Atividade ativ;
+            Atividade ativ = new Atividade { };
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                ativ = AtividadeMongo.SelectById(strconexao[1], id);
-            }
-            else
-            {
-                ativ = AtividadeSQL.SelectById(strconexao[1],id);
+                case "Mongo":
+                    ativ = AtividadeMongo.SelectById(strconexao[1], id);
+                    break;
+                case "SQL":
+                    ativ = AtividadeSQL.SelectById(strconexao[1], id);
+                    break;
+                case "Postgres":
+                    ativ = AtividadePostgres.SelectById(strconexao[1], id);
+                    break;
             }
 
             return ativ;
@@ -79,15 +91,18 @@ namespace Atividades.Banco
             string[] strconexao = StrConexao.GetString();
             string mensagem = "";
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                mensagem = AtividadeMongo.Insert(strconexao[1], atividade);
-                
-            }
-            else
-            {
-                mensagem = AtividadeSQL.Insert(strconexao[1], atividade);
-            }
+                case "Mongo":
+                    mensagem = AtividadeMongo.Insert(strconexao[1], atividade);
+                    break;
+                case "SQL":
+                    mensagem = AtividadeSQL.Insert(strconexao[1], atividade);
+                    break;
+                case "Postgres":
+                    mensagem = AtividadePostgres.Insert(strconexao[1], atividade);
+                    break;
+            }           
 
             return mensagem;
         }     
@@ -97,13 +112,17 @@ namespace Atividades.Banco
             string[] strconexao = StrConexao.GetString();
             string mensagem = "";
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                mensagem = AtividadeMongo.Update(strconexao[1], atividade);
-            }
-            else
-            {
-                mensagem = AtividadeSQL.Update(strconexao[1], atividade);
+                case "Mongo":
+                    mensagem = AtividadeMongo.Update(strconexao[1], atividade);
+                    break;
+                case "SQL":
+                    mensagem = AtividadeSQL.Update(strconexao[1], atividade);
+                    break;
+                case "Postgres":
+                    mensagem = AtividadePostgres.Update(strconexao[1], atividade);
+                    break;
             }
 
             return mensagem;
@@ -114,14 +133,18 @@ namespace Atividades.Banco
             string[] strconexao = StrConexao.GetString();
             string mensagem = "";
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                mensagem = AtividadeMongo.Update(strconexao[1], atividade);
-            }
-            else
-            {
-                mensagem = AtividadeSQL.UpdateEncerra(strconexao[1], atividade);
-            }
+                case "Mongo":
+                    mensagem = AtividadeMongo.Update(strconexao[1], atividade);
+                    break;
+                case "SQL":
+                    mensagem = AtividadeSQL.UpdateEncerra(strconexao[1], atividade);
+                    break;
+                case "Postgres":
+                    mensagem = AtividadePostgres.UpdateEncerra(strconexao[1], atividade);
+                    break;
+            }           
 
             return mensagem;
         }
@@ -130,14 +153,18 @@ namespace Atividades.Banco
             string[] strconexao = StrConexao.GetString();
             string mensagem = "";
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                mensagem = AtividadeMongo.Update(strconexao[1], atividade);
-            }
-            else
-            {
-                mensagem = AtividadeSQL.Reabrir(strconexao[1], atividade);
-            }
+                case "Mongo":
+                    mensagem = AtividadeMongo.Update(strconexao[1], atividade);
+                    break;
+                case "SQL":
+                    mensagem = AtividadeSQL.Reabrir(strconexao[1], atividade);
+                    break;
+                case "Postgres":
+                    mensagem = AtividadePostgres.Reabrir(strconexao[1], atividade);
+                    break;
+            }           
 
             return mensagem;
         }
@@ -146,13 +173,17 @@ namespace Atividades.Banco
             string[] strconexao = StrConexao.GetString();
             string mensagem = "";
 
-            if (strconexao[0] == "Mongo")
+            switch (strconexao[0])
             {
-                mensagem = AtividadeMongo.Delete(strconexao[1], atividade);
-            }
-            else
-            {
-                mensagem = AtividadeSQL.Delete(strconexao[1], atividade);
+                case "Mongo":
+                    mensagem = AtividadeMongo.Delete(strconexao[1], atividade);
+                    break;
+                case "SQL":
+                    mensagem = AtividadeSQL.Delete(strconexao[1], atividade);
+                    break;
+                case "Postgres":
+                    mensagem = AtividadePostgres.Delete(strconexao[1], atividade);
+                    break;
             }
 
             return mensagem;

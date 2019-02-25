@@ -9,7 +9,7 @@ namespace Atividades.Banco
     {
         public static string[] GetString()
         {
-            string banco = "SQL";
+            string banco = "Postgres";
             string[] strconexao = new string[2];
 
             strconexao[0] = banco;
@@ -22,7 +22,10 @@ namespace Atividades.Banco
                     break;
                 case "Mongo":
                     strconexao[1] = "mongodb://localhost:27017";
-                    break;                
+                    break;
+                case "Postgres":
+                    strconexao[1] = "User ID=postgres;Password=k#10ks;Host=localhost;Port=5432;Database=AtividadesDB;Pooling=true;";
+                    break;
             }                 
             return strconexao;
         }                
