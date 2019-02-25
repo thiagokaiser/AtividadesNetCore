@@ -23,10 +23,10 @@ namespace Atividades.Banco
                 IEnumerable<Atividade> ativs = new List<Atividade> { };
                 
                 ativs = conexao.Query<Atividade, Categoria, Atividade>(@"
-                    Select * from Atividade T1 INNER JOIN Categoria T2 ON T1.CategoriaId = T2.Id 
+                    Select * from Atividade T1 LEFT JOIN Categoria T2 ON T1.CategoriaId = T2.Id 
                     WHERE DataEncerramento IS NULL ORDER BY T1.Prioridade",
-                    (Atividade, Categoria) => {
-                        Atividade.Categoria = Categoria;
+                    (Atividade, Categoria) => {                        
+                        Atividade.Categoria = Categoria;                        
                         return Atividade;
                     }).Distinct().ToList();                
                 
@@ -39,7 +39,7 @@ namespace Atividades.Banco
             using (SqlConnection conexao = new SqlConnection(strconexao))
             {
                 IEnumerable<Atividade> ativs = conexao.Query<Atividade, Categoria, Atividade>(@"
-                        Select * from Atividade T1 INNER JOIN Categoria T2 ON T1.CategoriaId = T2.Id 
+                        Select * from Atividade T1 LEFT JOIN Categoria T2 ON T1.CategoriaId = T2.Id 
                         WHERE DataEncerramento IS NOT NULL ORDER BY T1.Prioridade",
                         (Atividade, Categoria) => {
                             Atividade.Categoria = Categoria;
@@ -54,7 +54,7 @@ namespace Atividades.Banco
             using (SqlConnection conexao = new SqlConnection(strconexao))
             {
                 Atividade ativ = conexao.Query<Atividade, Categoria, Atividade>(@"
-                    Select * from Atividade T1 INNER JOIN Categoria T2 ON T1.CategoriaId = T2.Id WHERE T1.Id = @Id",
+                    Select * from Atividade T1 LEFT JOIN Categoria T2 ON T1.CategoriaId = T2.Id WHERE T1.Id = @Id",
                     (Atividade, Categoria) => {
                         Atividade.Categoria = Categoria;                        
                         return Atividade;}, new { Id = id }).FirstOrDefault();

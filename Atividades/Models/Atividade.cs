@@ -20,6 +20,7 @@ namespace Atividades.Models
 
         public string Setor { get; set; }
 
+        [Required]
         public string CategoriaId { get; set; }
         public Categoria Categoria { get; set; }
 
