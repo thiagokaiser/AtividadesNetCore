@@ -20,13 +20,16 @@ namespace Atividades.Banco
         {                        
             using (SqlConnection conexao = new SqlConnection(strconexao))
             {
-                IEnumerable<Atividade> ativs = conexao.Query<Atividade, Categoria, Atividade>(@"
-                        Select * from Atividade T1 INNER JOIN Categoria T2 ON T1.CategoriaId = T2.Id 
-                        WHERE DataEncerramento IS NULL ORDER BY T1.Prioridade",
-                        (Atividade, Categoria) => {
-                            Atividade.Categoria = Categoria;
-                            return Atividade;
-                        }).Distinct().ToList(); 
+                IEnumerable<Atividade> ativs = new List<Atividade> { };
+                
+                ativs = conexao.Query<Atividade, Categoria, Atividade>(@"
+                    Select * from Atividade T1 INNER JOIN Categoria T2 ON T1.CategoriaId = T2.Id 
+                    WHERE DataEncerramento IS NULL ORDER BY T1.Prioridade",
+                    (Atividade, Categoria) => {
+                        Atividade.Categoria = Categoria;
+                        return Atividade;
+                    }).Distinct().ToList();                
+                
                 return ativs;
             }            
         }
