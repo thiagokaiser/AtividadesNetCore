@@ -197,7 +197,19 @@ namespace Atividades.Banco
             {
                 priorid += 1;
                 item.Prioridade = priorid;
-                mensagem = AtividadeSQL.AlteraPrioridade(strconexao[1], item);
+
+                switch (strconexao[0])
+                {
+                    case "Mongo":
+                        mensagem = "";
+                        break;
+                    case "SQL":
+                        mensagem = AtividadeSQL.AlteraPrioridade(strconexao[1], item);
+                        break;
+                    case "Postgres":
+                        mensagem = AtividadePostgres.AlteraPrioridade(strconexao[1], item);
+                        break;
+                }                
             }            
             return mensagem;
         }

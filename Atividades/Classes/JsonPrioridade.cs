@@ -11,7 +11,7 @@ namespace Atividades.Classes
     public class JsonPrioridade
     {        
         
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public int Prioridade { get; set; }
 
