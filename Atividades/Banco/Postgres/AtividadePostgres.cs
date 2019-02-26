@@ -74,11 +74,9 @@ namespace Atividades.Banco
                 using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
                 {
                     try
-                    {
-                        int idCategoria = Convert.ToInt32(atividade.CategoriaId);
-                            
+                    {                            
                         var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  CategoriaId, Data,  Prioridade, Solicitante, Narrativa) 
-                                                    VALUES(@Descricao,@Responsavel, @Setor, @CategoriaId, @Data, (Select MAX(Prioridade) from Atividade) + 1,
+                                                    VALUES(@Descricao,@Responsavel, @Setor, @CategoriaId, @Data, (Select coalesce(MAX(Prioridade), 0) from Atividade) + 1,
                                                            @Solicitante, @Narrativa); 
                                      ";
                         conexao.Execute(query, atividade);
@@ -109,9 +107,11 @@ namespace Atividades.Banco
                                         CategoriaId = @CategoriaId,
                                         Data        = @Data,                                        
                                         Solicitante = @Solicitante,
-                                        Narrativa   = @Narrativa
+                                        Narrativa   = @teste
                                         Where Id = @Id";
+
                         conexao.Execute(query, atividade);
+                        
                         mensagem = "Atividade alterada com sucesso";
                     }
                     catch (Exception ex)

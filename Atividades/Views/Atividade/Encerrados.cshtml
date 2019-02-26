@@ -59,7 +59,12 @@
                     @item.Setor
                 </td>
                 <td>
-                    @item.Categoria.Descricao
+                    @{
+                        if (item.Categoria != null)
+                        {
+                            @item.Categoria.Descricao
+                        }
+                    }
                 </td>
                 <td>
                     @item.Data.ToShortDateString()
