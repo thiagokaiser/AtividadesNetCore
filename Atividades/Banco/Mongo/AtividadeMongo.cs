@@ -28,7 +28,7 @@ namespace Atividades.Banco
             
             return ativs;           
         }
-        public static Atividade SelectById(string strconexao, string id)
+        public static Atividade SelectById(string strconexao, int id)
         {
             var client = new MongoClient(strconexao);
             var database = client.GetDatabase("test");

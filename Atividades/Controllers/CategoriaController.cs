@@ -36,7 +36,7 @@ namespace Atividades.Controllers
             return View(model);                     
         }
         [HttpGet]
-        public IActionResult Excluir(string id)
+        public IActionResult Excluir(int id)
         {
             Categoria categ = Banco.CategoriaCRUD.SelectById(id);
             return View(categ);
@@ -49,13 +49,13 @@ namespace Atividades.Controllers
             return RedirectToAction("Index");
         }
         [HttpGet]
-        public IActionResult Detalhe(string id)
+        public IActionResult Detalhe(int id)
         {
             Categoria categ = Banco.CategoriaCRUD.SelectById(id);
             return View(categ);
         }
         [HttpGet]
-        public IActionResult Editar(string id)
+        public IActionResult Editar(int id)
         {
             Categoria categ = Banco.CategoriaCRUD.SelectById(id);
             return View(categ);

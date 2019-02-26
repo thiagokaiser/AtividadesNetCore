@@ -50,7 +50,7 @@ namespace Atividades.Banco
             }
         }
 
-        public static Atividade SelectById(string strconexao, string id)
+        public static Atividade SelectById(string strconexao, int id)
         {
             using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {
@@ -74,7 +74,9 @@ namespace Atividades.Banco
                 using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
                 {
                     try
-                    {                       
+                    {
+                        int idCategoria = Convert.ToInt32(atividade.CategoriaId);
+                            
                         var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  CategoriaId, Data,  Prioridade, Solicitante, Narrativa) 
                                                     VALUES(@Descricao,@Responsavel, @Setor, @CategoriaId, @Data, (Select MAX(Prioridade) from Atividade) + 1,
                                                            @Solicitante, @Narrativa); 

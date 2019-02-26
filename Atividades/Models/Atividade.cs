@@ -12,7 +12,7 @@ namespace Atividades.Models
     {        
         [Key]
         [BsonId()]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string Descricao { get; set; }
 
@@ -21,7 +21,7 @@ namespace Atividades.Models
         public string Setor { get; set; }
 
         [Required]
-        public string CategoriaId { get; set; }
+        public int CategoriaId { get; set; }
         public Categoria Categoria { get; set; }
 
         [DataType(DataType.Date)]

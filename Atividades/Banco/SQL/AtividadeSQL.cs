@@ -49,7 +49,7 @@ namespace Atividades.Banco
             }
         }
 
-        public static Atividade SelectById(string strconexao, string id)
+        public static Atividade SelectById(string strconexao, int id)
         {
             using (SqlConnection conexao = new SqlConnection(strconexao))
             {

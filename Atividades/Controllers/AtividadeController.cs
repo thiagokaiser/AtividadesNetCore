@@ -52,7 +52,7 @@ namespace Atividades.Controllers
             return View(model);                     
         }
         [HttpGet]
-        public IActionResult Excluir(string id)
+        public IActionResult Excluir(int id)
         {
             Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
             return View(ativs);
@@ -65,13 +65,13 @@ namespace Atividades.Controllers
             return RedirectToAction("Index");
         }
         [HttpGet]
-        public IActionResult Detalhe(string id)
+        public IActionResult Detalhe(int id)
         {
             Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
             return View(ativs);
         }
         [HttpGet]
-        public IActionResult Editar(string id)
+        public IActionResult Editar(int id)
         {
             ViewBag.Categoria = Banco.CategoriaCRUD.GetSelectList();
             Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
@@ -86,7 +86,7 @@ namespace Atividades.Controllers
 
         }
         [HttpGet]
-        public IActionResult Encerrar(string id)
+        public IActionResult Encerrar(int id)
         {
             ViewBag.Categoria = Banco.CategoriaCRUD.GetSelectList();            
             Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
@@ -103,7 +103,7 @@ namespace Atividades.Controllers
         }
 
         [HttpGet]
-        public IActionResult Reabrir(string id)
+        public IActionResult Reabrir(int id)
         {
             ViewBag.Categoria = Banco.CategoriaCRUD.GetSelectList();
             Atividade ativs = Banco.AtividadeCRUD.SelectById(id);            

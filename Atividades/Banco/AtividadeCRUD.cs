@@ -64,7 +64,7 @@ namespace Atividades.Banco
             return ativs;
         }
 
-        public static Atividade SelectById(string id)
+        public static Atividade SelectById(int id)
         {
             string[] strconexao = StrConexao.GetString();
 

@@ -41,7 +41,7 @@ namespace Atividades.Banco
             return categ;
         }
 
-        public static Categoria SelectById(string id)
+        public static Categoria SelectById(int id)
         {
             string[] strconexao = StrConexao.GetString();
 

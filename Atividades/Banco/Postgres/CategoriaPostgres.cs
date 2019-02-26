@@ -26,7 +26,7 @@ namespace Atividades.Banco
             }            
         }
 
-        public static Categoria SelectById(string strconexao, string id)
+        public static Categoria SelectById(string strconexao, int id)
         {
             using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {
