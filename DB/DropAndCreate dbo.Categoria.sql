@@ -17,23 +17,3 @@ CREATE TABLE [dbo].[Categoria] (
     [Descricao] NCHAR (20) NULL,
     [Cor]       NCHAR (10) NULL
 );
-
-
-CREATE TABLE Categoria (
-    Id        SERIAL PRIMARY KEY,
-    Descricao NCHAR (20) NULL,
-    Cor       NCHAR (10) NULL
-);
-
-CREATE TABLE Atividade (
-    Id               SERIAL PRIMARY KEY,
-    Descricao        NCHAR (40)  NULL,
-    Responsavel      NCHAR (40)  NULL,
-    Setor            NCHAR (40)  NULL,
-    CategoriaId      INT         NULL,
-    Data             DATE        NULL,
-    Prioridade       INT         NULL,
-    DataEncerramento DATE        NULL,
-    Solicitante      NCHAR (40)  NULL,
-    Narrativa        NCHAR (200) NULL
-);

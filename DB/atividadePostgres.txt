@@ -1,0 +1,25 @@
+-- Table: public.atividade
+
+-- DROP TABLE public.atividade;
+
+CREATE TABLE public.atividade
+(
+    id integer NOT NULL DEFAULT nextval('atividade_id_seq'::regclass),
+    descricao character(40) COLLATE pg_catalog."default",
+    responsavel character(40) COLLATE pg_catalog."default",
+    setor character(40) COLLATE pg_catalog."default",
+    data date,
+    prioridade integer,
+    dataencerramento date,
+    solicitante character(40) COLLATE pg_catalog."default",
+    narrativa character(200) COLLATE pg_catalog."default",
+    categoriaid integer,
+    CONSTRAINT atividade_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.atividade
+    OWNER to postgres;

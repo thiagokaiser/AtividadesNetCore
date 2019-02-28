@@ -1,0 +1,18 @@
+-- Table: public.categoria
+
+-- DROP TABLE public.categoria;
+
+CREATE TABLE public.categoria
+(
+    id integer NOT NULL DEFAULT nextval('categoria_id_seq'::regclass),
+    descricao character(20) COLLATE pg_catalog."default",
+    cor character(10) COLLATE pg_catalog."default",
+    CONSTRAINT categoria_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.categoria
+    OWNER to postgres;

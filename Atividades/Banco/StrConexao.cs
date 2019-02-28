@@ -24,7 +24,7 @@ namespace Atividades.Banco
                     strconexao[1] = "mongodb://localhost:27017";
                     break;
                 case "Postgres":
-                    strconexao[1] = "User ID=postgres;Password=k#10ks;Host=localhost;Port=5432;Database=AtividadesDB;Pooling=true;";
+                    strconexao[1] = "User ID=postgres;Password='mypass';Host=localhost;Port=5432;Database=AtividadesDB;Pooling=true;";
                     break;
             }                 
             return strconexao;
