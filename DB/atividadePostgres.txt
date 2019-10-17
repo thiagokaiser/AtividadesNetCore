@@ -1,10 +1,12 @@
 -- Table: public.atividade
 
--- DROP TABLE public.atividade;
+DROP TABLE public.atividade;
+
+CREATE SEQUENCE atividade_id_seq;
 
 CREATE TABLE public.atividade
 (
-    id integer NOT NULL DEFAULT nextval('atividade_id_seq'::regclass),
+    id integer NOT NULL DEFAULT nextval('atividade_id_seq'),
     descricao character(40) COLLATE pg_catalog."default",
     responsavel character(40) COLLATE pg_catalog."default",
     setor character(40) COLLATE pg_catalog."default",

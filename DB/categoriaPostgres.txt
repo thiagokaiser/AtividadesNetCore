@@ -2,9 +2,11 @@
 
 -- DROP TABLE public.categoria;
 
+CREATE SEQUENCE categoria_id_seq;
+
 CREATE TABLE public.categoria
 (
-    id integer NOT NULL DEFAULT nextval('categoria_id_seq'::regclass),
+    id integer NOT NULL DEFAULT nextval('categoria_id_seq'),
     descricao character(20) COLLATE pg_catalog."default",
     cor character(10) COLLATE pg_catalog."default",
     CONSTRAINT categoria_pkey PRIMARY KEY (id)
