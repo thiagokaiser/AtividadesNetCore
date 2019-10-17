@@ -62,7 +62,7 @@
             @Html.DisplayNameFor(model => model.Narrativa)
         </dt>
         <dd>
-            @Html.EditorFor(model => model.Narrativa, additionalViewData: new { htmlAttributes = new { @class = "form-control", rows="10" } })                
+            @Html.TextAreaFor(model => model.Narrativa, 5, 40, new { @readonly = "readonly" })                
         </dd>
     </dl>
 </div>

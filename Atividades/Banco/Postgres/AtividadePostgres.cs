@@ -113,7 +113,7 @@ namespace Atividades.Banco
                                         CategoriaId = @CategoriaId,
                                         Data        = @Data,                                        
                                         Solicitante = @Solicitante,
-                                        Narrativa   = @teste
+                                        Narrativa   = @Narrativa
                                         Where Id = @Id";
 
                         conexao.Execute(query, atividade);
