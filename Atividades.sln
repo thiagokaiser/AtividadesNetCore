@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Atividades\Api.csproj", "{B83D2641-6EEB-4983-A106-39789C053FD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{B83D2641-6EEB-4983-A106-39789C053FD0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{3391C362-99AE-4540-9A45-207F060D9477}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfrastructureMongoDB", "InfrastructureMongoDB\InfrastructureMongoDB.csproj", "{B496923B-A17C-4F9B-84DD-39048FEAC1DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfrastructurePostgreSQL", "InfrastructurePostgres\InfrastructurePostgreSQL.csproj", "{261A6D8A-27ED-4361-B708-5E2DEE04913C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfrastructurePostgreSQL", "InfrastructurePostgreSQL\InfrastructurePostgreSQL.csproj", "{261A6D8A-27ED-4361-B708-5E2DEE04913C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfrastructureSQL", "InfrastructureSQL\InfrastructureSQL.csproj", "{746E65DA-F8C9-432A-A866-7162DC7AC38C}"
 EndProject
