@@ -3,21 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Atividades.Models;
-using Microsoft.AspNetCore.Authorization;
 using Dapper;
 using Npgsql;
-using System.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using System.Reflection;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Core.Models;
+using Core.Interfaces;
 
-namespace Atividades.Banco
+namespace InfrastructurePostgreSQL.Repositories
 {
-    public class CategoriaPostgres
-    {       
-        public static IEnumerable<Categoria> Select(string strconexao)
+    public class CategoriaPostgreSQL : IRepositoryCategoria
+    {
+        private readonly string strconexao;
+
+        public CategoriaPostgreSQL(string strconexao)
+        {
+            this.strconexao = strconexao;
+        }
+
+        public IEnumerable<Categoria> Select()
         {
             using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {
@@ -26,7 +29,7 @@ namespace Atividades.Banco
             }            
         }
 
-        public static Categoria SelectById(string strconexao, int id)
+        public Categoria SelectById(int id)
         {
             using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {
@@ -35,11 +38,11 @@ namespace Atividades.Banco
             }
         }
 
-        public static string Insert(string strconexao, Categoria categ)
+        public string Insert(Categoria categ)
         {            
             string mensagem = "";
 
-            mensagem = CategoriaPostgres.ValidaUpdate(categ);
+            mensagem = ValidaUpdate(categ);
             if (mensagem == "")
             {
                 using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
@@ -59,10 +62,11 @@ namespace Atividades.Banco
             }            
             return mensagem;
         }             
-        public static string Update(string strconexao, Categoria categ)
+
+        public string Update(Categoria categ)
         {
             string mensagem = "";
-            mensagem = CategoriaPostgres.ValidaUpdate(categ);
+            mensagem = ValidaUpdate(categ);
             if (mensagem == "")
             {
                 using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
@@ -85,11 +89,11 @@ namespace Atividades.Banco
             return mensagem;
         }
 
-        public static string Delete(string strconexao, Categoria categ)
+        public string Delete(Categoria categ)
         {            
             string mensagem = "";
 
-            mensagem = CategoriaPostgres.ValidaDelete(categ);
+            mensagem = ValidaDelete(categ);
             if (mensagem == "")
             {
                 using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
@@ -108,7 +112,8 @@ namespace Atividades.Banco
             }
             return mensagem;
         }
-        private static string ValidaUpdate(Categoria categ)
+
+        private string ValidaUpdate(Categoria categ)
         {
             string mensagem = "";            
             if (categ.Descricao?.TrimEnd() == "asd")
@@ -117,32 +122,11 @@ namespace Atividades.Banco
             }
             return mensagem;
         }
-        private static string ValidaDelete(Categoria categ)
-        {
-            string mensagem = "";
-            string[] strconexao = StrConexao.GetString();
-            Categoria categoria = CategoriaPostgres.SelectById(strconexao[1], categ.Id);
-            if (categoria.Descricao?.TrimEnd() == "zxc")
-            {
-                mensagem = "erro ao eliminar";
 
-            }            
+        private string ValidaDelete(Categoria categ)
+        {
+            string mensagem = "";                        
             return mensagem;
         }
-        public static List<SelectListItem> GetSelectList()
-        {
-            
-            List<SelectListItem> categs = new List<SelectListItem>();
-
-            IEnumerable<Categoria> categorias = Banco.CategoriaCRUD.Select().ToList();
-            foreach (Categoria categ in categorias)
-            {
-                categs.Add(new SelectListItem { Value = categ.Id.ToString(), Text = categ.Descricao });
-            }
-
-            return categs;
-            
-        }
-
     }
 }

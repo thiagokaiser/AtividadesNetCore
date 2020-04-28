@@ -3,47 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Atividades.Models;
-using Atividades.Classes;
-using Microsoft.AspNetCore.Authorization;
 using Dapper;
-using Npgsql;
-using System.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using System.Reflection;
+using Core.Models;
+using System.Data.SqlClient;
 
-namespace Atividades.Banco
+namespace InfrastructureSQL.Repositories
 {
-    public class AtividadePostgres
+    public class AtividadeSQL
     {       
         public static IEnumerable<Atividade> Select(string strconexao)
         {                        
-            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+            using (SqlConnection conexao = new SqlConnection(strconexao))
             {
                 IEnumerable<Atividade> ativs = new List<Atividade> { };
-                
-                
-                
                 
                 ativs = conexao.Query<Atividade, Categoria, Atividade>(@"
                     Select * from Atividade T1 LEFT JOIN Categoria T2 ON T1.CategoriaId = T2.Id 
                     WHERE DataEncerramento IS NULL ORDER BY T1.Prioridade",
-                    (Atividade, Categoria) =>
-                    {
-                        Atividade.Categoria = Categoria;
+                    (Atividade, Categoria) => {                        
+                        Atividade.Categoria = Categoria;                        
                         return Atividade;
-                    }).Distinct().ToList();
+                    }).Distinct().ToList();                
                 
-
-
                 return ativs;
             }            
         }
 
         public static IEnumerable<Atividade> SelectEncerrados(string strconexao)
         {
-            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+            using (SqlConnection conexao = new SqlConnection(strconexao))
             {
                 IEnumerable<Atividade> ativs = conexao.Query<Atividade, Categoria, Atividade>(@"
                         Select * from Atividade T1 LEFT JOIN Categoria T2 ON T1.CategoriaId = T2.Id 
@@ -58,7 +47,7 @@ namespace Atividades.Banco
 
         public static Atividade SelectById(string strconexao, int id)
         {
-            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+            using (SqlConnection conexao = new SqlConnection(strconexao))
             {
                 Atividade ativ = conexao.Query<Atividade, Categoria, Atividade>(@"
                     Select * from Atividade T1 LEFT JOIN Categoria T2 ON T1.CategoriaId = T2.Id WHERE T1.Id = @Id",
@@ -74,17 +63,17 @@ namespace Atividades.Banco
         {            
             string mensagem = "";
 
-            mensagem = AtividadePostgres.ValidaUpdate(atividade);
+            mensagem = AtividadeSQL.ValidaUpdate(atividade);
             if (mensagem == "")
             {
-                using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+                using (SqlConnection conexao = new SqlConnection(strconexao))
                 {
                     try
-                    {                            
+                    {                       
                         var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  CategoriaId, Data,  Prioridade, Solicitante, Narrativa) 
-                                                    VALUES(@Descricao,@Responsavel, @Setor, @CategoriaId, @Data, (Select coalesce(MAX(Prioridade), 0) from Atividade) + 1,
+                                                    VALUES(@Descricao,@Responsavel, @Setor, @CategoriaId, @Data, (Select ISNULL(MAX(Prioridade), 0) from Atividade) + 1,
                                                            @Solicitante, @Narrativa); 
-                                     ";
+                                        SELECT CAST(SCOPE_IDENTITY() as INT);";
                         conexao.Execute(query, atividade);
                         mensagem = "Atividade adicionada com sucesso";
                     }
@@ -99,10 +88,10 @@ namespace Atividades.Banco
         public static string Update(string strconexao, Atividade atividade)
         {
             string mensagem = "";
-            mensagem = AtividadePostgres.ValidaUpdate(atividade);
+            mensagem = AtividadeSQL.ValidaUpdate(atividade);
             if (mensagem == "")
             {
-                using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+                using (SqlConnection conexao = new SqlConnection(strconexao))
                 {
                     try
                     {
@@ -115,9 +104,7 @@ namespace Atividades.Banco
                                         Solicitante = @Solicitante,
                                         Narrativa   = @Narrativa
                                         Where Id = @Id";
-
                         conexao.Execute(query, atividade);
-                        
                         mensagem = "Atividade alterada com sucesso";
                     }
                     catch (Exception ex)
@@ -135,7 +122,7 @@ namespace Atividades.Banco
             //mensagem = AtividadeSQL.ValidaUpdate(atividade);
             if (mensagem == "")
             {
-                using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+                using (SqlConnection conexao = new SqlConnection(strconexao))
                 {
                     try
                     {
@@ -160,7 +147,7 @@ namespace Atividades.Banco
             //mensagem = AtividadeSQL.ValidaUpdate(atividade);
             if (mensagem == "")
             {
-                using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+                using (SqlConnection conexao = new SqlConnection(strconexao))
                 {
                     try
                     {
@@ -183,10 +170,10 @@ namespace Atividades.Banco
         {            
             string mensagem = "";
 
-            mensagem = AtividadePostgres.ValidaDelete(atividade);
+            mensagem = AtividadeSQL.ValidaDelete(atividade);
             if (mensagem == "")
             {
-                using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+                using (SqlConnection conexao = new SqlConnection(strconexao))
                 {
                     try
                     {
@@ -223,21 +210,14 @@ namespace Atividades.Banco
         }
         private static string ValidaDelete(Atividade atividade)
         {
-            string mensagem = "";
-            string[] strconexao = StrConexao.GetString();
-            Atividade ativ = AtividadePostgres.SelectById(strconexao[1], atividade.Id);
-            if (ativ.Descricao?.TrimEnd() == "zxc")
-            {
-                mensagem = "erro ao eliminar";
-
-            }            
+            string mensagem = "";            
             return mensagem;
         }
         public static string AlteraPrioridade(string strconexao, JsonPrioridade prioridade)
         {
             string mensagem = "";
             
-            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+            using (SqlConnection conexao = new SqlConnection(strconexao))
             {
                 try
                 {

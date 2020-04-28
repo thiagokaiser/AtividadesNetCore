@@ -6,15 +6,11 @@ using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Atividades.Classes
+namespace Core.Models
 {
     public class JsonPrioridade
-    {        
-        
+    {                
         public int Id { get; set; }
-
         public int Prioridade { get; set; }
-
-
     }
 }

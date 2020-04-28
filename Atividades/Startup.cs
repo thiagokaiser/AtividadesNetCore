@@ -9,14 +9,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Atividades.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Atividades.Models;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
-using MongoDB.Bson.Serialization.IdGenerators;
+using Api.Contexts;
+using Core.Services;
+using Core.Interfaces;
+using InfrastructurePostgreSQL.Repositories;
+using Core.Models;
 
 namespace Atividades
 {
@@ -39,13 +38,21 @@ namespace Atividades
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            var connectionString = Configuration.GetConnectionString("PostgreSQL");
+
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(connectionString));
             
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();            
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddScoped<AtividadeService>();
+            services.AddScoped<CategoriaService>();
+            services.AddScoped<IRepositoryAtividade>(x => new AtividadePostgreSQL(connectionString));
+            services.AddScoped<IRepositoryCategoria>(x => new CategoriaPostgreSQL(connectionString));
+
             /*
             BsonClassMap.RegisterClassMap<Atividade>(cm =>
             {

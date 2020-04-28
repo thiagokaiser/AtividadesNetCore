@@ -3,19 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Atividades.Models;
-using Microsoft.AspNetCore.Authorization;
-using Dapper;
-using System.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using System.Reflection;
-
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Core.Models;
 
-
-namespace Atividades.Banco
+namespace InfrastructureMongoDB.Repositories
 {
     public class AtividadeMongo
     {        

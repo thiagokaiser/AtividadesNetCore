@@ -4,8 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Atividades.Models;
-using Atividades.Classes;
+using Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Dapper;
 using System.Data.SqlClient;
@@ -13,74 +12,76 @@ using Microsoft.Extensions.Configuration;
 using System.Net.Mail;
 using System.Net;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Core.Services;
 
-namespace Atividades.Controllers
+namespace Api.Controllers
 {   
     [Authorize]
     public class AtividadeController : Controller
     {
-        private IConfiguration _config;
+        private readonly AtividadeService atividadeService;
+        private readonly CategoriaService categoriaService;
 
-        public AtividadeController(IConfiguration configuration)
+        public AtividadeController(AtividadeService atividadeService, CategoriaService categoriaService)
         {
-            _config = configuration;
-        }
+            this.atividadeService = atividadeService;
+            this.categoriaService = categoriaService;
+        }        
+
         public IActionResult Index()
-        {            
-            ViewBag.teste = "asdddd";
-            IEnumerable<Atividade> ativs = Banco.AtividadeCRUD.Select();          
+        {
+            var ativs = atividadeService.Select();          
             return View(ativs);            
         }
         public IActionResult Encerrados()
         {
-            IEnumerable<Atividade> ativs = Banco.AtividadeCRUD.SelectEncerrados();
+            var ativs = atividadeService.SelectEncerrados();
             return View(ativs);
         }
         [HttpPost]
         public IActionResult Add(Atividade atividade)
         {            
-            string insert = Banco.AtividadeCRUD.Insert(atividade);
+            var insert = atividadeService.Insert(atividade);
             TempData["Message"] = insert;
             return RedirectToAction("Index");            
         }
         [HttpGet]
         public IActionResult Add()
         {
-            ViewBag.Categoria = Banco.CategoriaCRUD.GetSelectList();
-
+            ViewBag.Categoria = SelectListCategoria();
             var model = new Atividade { Responsavel = "Thiago", Setor = "TI", Data = DateTime.Now };
             return View(model);                     
         }
         [HttpGet]
         public IActionResult Excluir(int id)
         {
-            Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
+            Atividade ativs = atividadeService.SelectById(id);
             return View(ativs);
         }
         [HttpPost]
         public IActionResult Excluir(Atividade atividade)
         {
-            string delete = Banco.AtividadeCRUD.Delete(atividade);
+            string delete = atividadeService.Delete(atividade);
             TempData["Message"] = delete;            
             return RedirectToAction("Index");
         }
         [HttpGet]
         public IActionResult Detalhe(int id)
         {
-            Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
+            Atividade ativs = atividadeService.SelectById(id);
             return View(ativs);
         }
         [HttpGet]
         public IActionResult Editar(int id)
-        {
-            ViewBag.Categoria = Banco.CategoriaCRUD.GetSelectList();
-            Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
+        {            
+            ViewBag.Categoria = SelectListCategoria();
+            var ativs = atividadeService.SelectById(id);
             return View(ativs);
         }
         [HttpPost]
         public IActionResult Editar(Atividade atividade)
         {
-            string ativ = Banco.AtividadeCRUD.Update(atividade);
+            string ativ = atividadeService.Update(atividade);
             TempData["Message"] = ativ;
             return RedirectToAction("Index");
 
@@ -88,15 +89,15 @@ namespace Atividades.Controllers
         [HttpGet]
         public IActionResult Encerrar(int id)
         {
-            ViewBag.Categoria = Banco.CategoriaCRUD.GetSelectList();            
-            Atividade ativs = Banco.AtividadeCRUD.SelectById(id);
+            ViewBag.Categoria = SelectListCategoria();
+            var ativs = atividadeService.SelectById(id);
             ativs.DataEncerramento = DateTime.Now;
             return View(ativs);
         }
         [HttpPost]
         public IActionResult Encerrar(Atividade atividade)
         {
-            string ativ = Banco.AtividadeCRUD.UpdateEncerra(atividade);
+            var ativ = atividadeService.UpdateEncerra(atividade);
             TempData["Message"] = ativ;
             return RedirectToAction("Index");
 
@@ -105,14 +106,14 @@ namespace Atividades.Controllers
         [HttpGet]
         public IActionResult Reabrir(int id)
         {
-            ViewBag.Categoria = Banco.CategoriaCRUD.GetSelectList();
-            Atividade ativs = Banco.AtividadeCRUD.SelectById(id);            
+            ViewBag.Categoria = SelectListCategoria();
+            var ativs = atividadeService.SelectById(id);            
             return View(ativs);
         }
         [HttpPost]
         public IActionResult Reabrir(Atividade atividade)
         {
-            string ativ = Banco.AtividadeCRUD.Reabrir(atividade);
+            var ativ = atividadeService.Reabrir(atividade);
             TempData["Message"] = ativ;
             return RedirectToAction("Encerrados");
         }
@@ -147,7 +148,7 @@ namespace Atividades.Controllers
             string mensagem = "Error";
             if (lista != null)
             {
-                mensagem = Banco.AtividadeCRUD.AlteraPrioridade(lista);
+                mensagem = atividadeService.AlteraPrioridade(lista);
                 return Json(mensagem);
             }
             else
@@ -155,6 +156,17 @@ namespace Atividades.Controllers
                 return Json(mensagem);
             }
 
+        }
+
+        private List<SelectListItem> SelectListCategoria()
+        {
+            List<SelectListItem> categs = new List<SelectListItem>();
+            var categorias = categoriaService.Select().ToList();
+            foreach (var categ in categorias)
+            {
+                categs.Add(new SelectListItem { Value = categ.Id.ToString(), Text = categ.Descricao });
+            }
+            return categs;
         }
     }
 }

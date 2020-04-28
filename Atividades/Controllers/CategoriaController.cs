@@ -4,28 +4,36 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Atividades.Models;
+using Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Dapper;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Net.Mail;
 using System.Net;
+using Core.Services;
 
-namespace Atividades.Controllers
+namespace Api.Controllers
 {   
     [Authorize]
     public class CategoriaController : Controller
-    {        
+    {
+        private readonly CategoriaService categoriaService;
+
+        public CategoriaController(CategoriaService categoriaService)
+        {
+            this.categoriaService = categoriaService;
+        }
+
         public IActionResult Index()
         {            
-            IEnumerable<Categoria> ativs = Banco.CategoriaCRUD.Select();          
+            IEnumerable<Categoria> ativs = categoriaService.Select();          
             return View(ativs);            
         }
         [HttpPost]
         public IActionResult Add(Categoria categ)
         {            
-            string insert = Banco.CategoriaCRUD.Insert(categ);
+            string insert = categoriaService.Insert(categ);
             TempData["Message"] = insert;
             return RedirectToAction("Index");            
         }
@@ -38,32 +46,32 @@ namespace Atividades.Controllers
         [HttpGet]
         public IActionResult Excluir(int id)
         {
-            Categoria categ = Banco.CategoriaCRUD.SelectById(id);
+            Categoria categ = categoriaService.SelectById(id);
             return View(categ);
         }
         [HttpPost]
         public IActionResult Excluir(Categoria categ)
         {
-            string delete = Banco.CategoriaCRUD.Delete(categ);
+            string delete = categoriaService.Delete(categ);
             TempData["Message"] = delete;            
             return RedirectToAction("Index");
         }
         [HttpGet]
         public IActionResult Detalhe(int id)
         {
-            Categoria categ = Banco.CategoriaCRUD.SelectById(id);
+            Categoria categ = categoriaService.SelectById(id);
             return View(categ);
         }
         [HttpGet]
         public IActionResult Editar(int id)
         {
-            Categoria categ = Banco.CategoriaCRUD.SelectById(id);
+            Categoria categ = categoriaService.SelectById(id);
             return View(categ);
         }
         [HttpPost]
         public IActionResult Editar(Categoria categ)
         {
-            string categoria = Banco.CategoriaCRUD.Update(categ);
+            string categoria = categoriaService.Update(categ);
             TempData["Message"] = categoria;
             return RedirectToAction("Index");
 

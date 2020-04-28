@@ -3,16 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Atividades.Models;
-using Microsoft.AspNetCore.Authorization;
 using Dapper;
 using System.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
-using System.Reflection;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Core.Models;
 
-namespace Atividades.Banco
+namespace InfrastructureSQL.Repositories
 {
     public class CategoriaSQL
     {       
@@ -119,30 +114,8 @@ namespace Atividades.Banco
         }
         private static string ValidaDelete(Categoria categ)
         {
-            string mensagem = "";
-            string[] strconexao = StrConexao.GetString();
-            Categoria categoria = CategoriaSQL.SelectById(strconexao[1], categ.Id);
-            if (categoria.Descricao?.TrimEnd() == "zxc")
-            {
-                mensagem = "erro ao eliminar";
-
-            }            
+            string mensagem = "";            
             return mensagem;
-        }
-        public static List<SelectListItem> GetSelectList()
-        {
-            
-            List<SelectListItem> categs = new List<SelectListItem>();
-
-            IEnumerable<Categoria> categorias = Banco.CategoriaCRUD.Select().ToList();
-            foreach (Categoria categ in categorias)
-            {
-                categs.Add(new SelectListItem { Value = categ.Id.ToString(), Text = categ.Descricao });
-            }
-
-            return categs;
-            
-        }
-
+        }        
     }
 }
