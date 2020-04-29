@@ -18,10 +18,6 @@ using InfrastructurePostgreSQL.Repositories;
 using Core.Models;
 using InfrastructureSQL.Repositories;
 using InfrastructureMongoDB.Repositories;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.IdGenerators;
-using MongoDB.Bson.Serialization.Serializers;
 
 namespace Atividades
 {
@@ -70,22 +66,7 @@ namespace Atividades
             //Mongo
             services.AddScoped<IRepositoryAtividade>(x => new AtividadeMongoDB(conStringMongo));
             services.AddScoped<IRepositoryCategoria>(x => new CategoriaMongoDB(conStringMongo));
-            /*
-            BsonClassMap.RegisterClassMap<Categoria>(cm =>
-            {
-                cm.AutoMap();
-                cm.MapIdProperty(c => c.Id)
-                  .SetIdGenerator(StringObjectIdGenerator.Instance)
-                  .SetSerializer(new Int32Serializer(BsonType.ObjectId));
-            });
-
-            BsonClassMap.RegisterClassMap<Categoria>(cm =>
-            {
-                cm.AutoMap();
-                cm.MapIdProperty(c => c.Id)
-                    .SetIdGenerator(StringObjectIdGenerator.Instance)
-                    .SetSerializer(new StringSerializer(BsonType.ObjectId));
-            });*/
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

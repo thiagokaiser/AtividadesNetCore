@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
-using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Core.Models
 {
