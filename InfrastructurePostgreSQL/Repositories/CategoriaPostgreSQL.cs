@@ -8,6 +8,7 @@ using Npgsql;
 using System.Reflection;
 using Core.Models;
 using Core.Interfaces;
+using Core.ViewModels;
 
 namespace InfrastructurePostgreSQL.Repositories
 {
@@ -38,95 +39,126 @@ namespace InfrastructurePostgreSQL.Repositories
             }
         }
 
-        public string Insert(Categoria categ)
-        {            
-            string mensagem = "";
+        public ResultViewModel Insert(Categoria categ)
+        {
+            var validate = ValidaUpdate(categ);
+            if (!validate.Success) return validate;
 
-            mensagem = ValidaUpdate(categ);
-            if (mensagem == "")
+            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {
-                using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+                try
                 {
-                    try
+                    var query = @"INSERT INTO Categoria(Descricao, Cor) 
+                                                VALUES(@Descricao,@Cor); ";
+                    conexao.Execute(query, categ);
+
+                    return new ResultViewModel()
                     {
-                        var query = @"INSERT INTO Categoria(Descricao, Cor) 
-                                                    VALUES(@Descricao,@Cor); ";
-                        conexao.Execute(query, categ);
-                        mensagem = "Atividade adicionada com sucesso";
-                    }
-                    catch (Exception ex)
-                    {
-                        mensagem = ex.ToString();
-                    }                    
+                        Success = true,
+                        Message = "Categoria adicionada com sucesso",
+                        Data = categ
+                    };                        
                 }
+                catch (Exception ex)
+                {
+                    return new ResultViewModel()
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Data = ex
+                    };
+                }                    
             }            
-            return mensagem;
         }             
 
-        public string Update(Categoria categ)
+        public ResultViewModel Update(Categoria categ)
         {
-            string mensagem = "";
-            mensagem = ValidaUpdate(categ);
-            if (mensagem == "")
+            var validate = ValidaUpdate(categ);
+            if (!validate.Success) return validate;
+            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {
-                using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+                try
                 {
-                    try
+                    var query = @"Update Categoria Set 
+                                    Descricao = @Descricao,
+                                    Cor       = @Cor                                        
+                                    Where Id = @Id";
+                    conexao.Execute(query, categ);
+
+                    return new ResultViewModel()
                     {
-                        var query = @"Update Categoria Set 
-                                        Descricao = @Descricao,
-                                        Cor       = @Cor                                        
-                                        Where Id = @Id";
-                        conexao.Execute(query, categ);
-                        mensagem = "Atividade alterada com sucesso";
-                    }
-                    catch (Exception ex)
-                    {
-                        mensagem = ex.ToString();
-                    }                    
+                        Success = true,
+                        Message = "Categoria alterada com sucesso",
+                        Data = categ
+                    };                    
                 }
-            }
-            return mensagem;
+                catch (Exception ex)
+                {
+                    return new ResultViewModel()
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Data = ex
+                    };
+                }                    
+            }            
         }
 
-        public string Delete(Categoria categ)
-        {            
-            string mensagem = "";
+        public ResultViewModel Delete(Categoria categ)
+        {
+            var validate = ValidaDelete(categ);
+            if (!validate.Success) return validate;
 
-            mensagem = ValidaDelete(categ);
-            if (mensagem == "")
+            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {
-                using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+                try
                 {
-                    try
+                    var query = "DELETE FROM Categoria WHERE Id =" + categ.Id;
+                    conexao.Execute(query);
+
+                    return new ResultViewModel()
                     {
-                        var query = "DELETE FROM Categoria WHERE Id =" + categ.Id;
-                        conexao.Execute(query);
-                        mensagem = "Atividade eliminada com sucesso";
-                    }
-                    catch (Exception ex)
-                    {
-                        mensagem = ex.ToString();
-                    }                    
+                        Success = true,
+                        Message = "Categoria eliminada com sucesso",
+                        Data = categ
+                    };
                 }
-            }
-            return mensagem;
+                catch (Exception ex)
+                {
+                    return new ResultViewModel()
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Data = ex
+                    };
+                }                    
+            }            
         }
 
-        private string ValidaUpdate(Categoria categ)
+        private ResultViewModel ValidaUpdate(Categoria categ)
         {
-            string mensagem = "";            
+            var listErros = new List<string>();            
             if (categ.Descricao?.TrimEnd() == "asd")
             {
-                mensagem = "erro ao alterar";
+                listErros.Add("Descrição deve ser diferente de 'asd'");
             }
-            return mensagem;
+
+            return new ResultViewModel()
+            {
+                Success = listErros.Count() == 0,
+                Message = listErros.Count() > 0 ? "Ocorreram erros" : "",
+                Data = listErros
+            };
         }
 
-        private string ValidaDelete(Categoria categ)
+        private ResultViewModel ValidaDelete(Categoria categ)
         {
-            string mensagem = "";                        
-            return mensagem;
+            return new ResultViewModel()
+            {
+                Success = true,
+                Message = "",
+                Data = null
+            };
         }
     }
 }

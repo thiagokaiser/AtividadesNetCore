@@ -2,14 +2,10 @@
     ViewData["Title"] = "Index";
 }
 
-
 @using Core.Models
 @model IEnumerable<Atividade>
 
-
-
 <h2>Index</h2>
-
 <p>
     <a asp-action="Add">Create New</a> | 
     <a asp-action="Encerrados">Encerrados</a>
@@ -80,7 +76,6 @@
 
 @section Scripts {
     <script type="text/javascript">        
-
         $('#ativs').sortable({
             axis: 'y',
             update: function (event, ui) {
@@ -91,12 +86,10 @@
                         id: $row.attr('id'),
                         prioridade: $row.attr('prioridade')
                     });
-                });
-               
-                
+                });                
                 // POST to server using $.post or $.ajax
                 $.ajax({                    
-                    url: 'Atividade/Atualizatable',
+                    url: 'Atividade/AtualizaPrioridade',
                     type: 'POST',
                     dataType: 'json',
                     contentType: 'application/json',
@@ -105,11 +98,9 @@
                         console.log(retorno);
                     }
                     
-                });
-                
+                });                
             }
         });
         $("#ativs").disableSelection();
-
     </script>
 }

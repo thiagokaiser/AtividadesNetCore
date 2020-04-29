@@ -8,6 +8,7 @@ using Npgsql;
 using System.Reflection;
 using Core.Models;
 using Core.Interfaces;
+using Core.ViewModels;
 
 namespace InfrastructurePostgreSQL.Repositories
 {
@@ -23,10 +24,8 @@ namespace InfrastructurePostgreSQL.Repositories
         public IEnumerable<Atividade> Select()
         {                        
             using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
-            {
-                IEnumerable<Atividade> ativs = new List<Atividade> { };                
-                
-                ativs = conexao.Query<Atividade, Categoria, Atividade>(@"
+            {                                
+                var ativs = conexao.Query<Atividade, Categoria, Atividade>(@"
                     Select * from Atividade T1 LEFT JOIN Categoria T2 ON T1.CategoriaId = T2.Id 
                     WHERE DataEncerramento IS NULL ORDER BY T1.Prioridade",
                     (Atividade, Categoria) =>
@@ -43,7 +42,7 @@ namespace InfrastructurePostgreSQL.Repositories
         {
             using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {
-                IEnumerable<Atividade> ativs = conexao.Query<Atividade, Categoria, Atividade>(@"
+                var ativs = conexao.Query<Atividade, Categoria, Atividade>(@"
                         Select * from Atividade T1 LEFT JOIN Categoria T2 ON T1.CategoriaId = T2.Id 
                         WHERE DataEncerramento IS NOT NULL ORDER BY T1.Prioridade",
                         (Atividade, Categoria) => {
@@ -58,7 +57,7 @@ namespace InfrastructurePostgreSQL.Repositories
         {
             using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {
-                Atividade ativ = conexao.Query<Atividade, Categoria, Atividade>(@"
+                var ativ = conexao.Query<Atividade, Categoria, Atividade>(@"
                     Select * from Atividade T1 LEFT JOIN Categoria T2 ON T1.CategoriaId = T2.Id WHERE T1.Id = @Id",
                     (Atividade, Categoria) => {
                         Atividade.Categoria = Categoria;                        
@@ -68,166 +67,173 @@ namespace InfrastructurePostgreSQL.Repositories
             }
         }
 
-        public string Insert(Atividade atividade)
-        {            
-            string mensagem = "";
-
-            mensagem = ValidaUpdate(atividade);
-            if (mensagem == "")
+        public ResultViewModel Insert(Atividade atividade)
+        {
+            var validate = ValidaUpdate(atividade);
+            if (!validate.Success) return validate;
+            
+            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {
-                using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
-                {
-                    try
-                    {                            
-                        var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  CategoriaId, Data,  Prioridade, Solicitante, Narrativa) 
-                                                    VALUES(@Descricao,@Responsavel, @Setor, @CategoriaId, @Data, (Select coalesce(MAX(Prioridade), 0) from Atividade) + 1,
-                                                           @Solicitante, @Narrativa); 
-                                     ";
-                        conexao.Execute(query, atividade);
-                        mensagem = "Atividade adicionada com sucesso";
-                    }
-                    catch (Exception ex)
+                try
+                {                            
+                    var query = @"INSERT INTO Atividade(Descricao, Responsavel,  Setor,  CategoriaId, Data,  Prioridade, Solicitante, Narrativa) 
+                                                VALUES(@Descricao,@Responsavel, @Setor, @CategoriaId, @Data, (Select coalesce(MAX(Prioridade), 0) from Atividade) + 1,
+                                                        @Solicitante, @Narrativa);";
+                    conexao.Execute(query, atividade);
+
+                    return new ResultViewModel()
                     {
-                        mensagem = ex.ToString();
-                    }                    
+                        Success = true,
+                        Message = "Atividade adicionada com sucesso",
+                        Data = atividade
+                    };                        
                 }
+                catch (Exception ex)
+                {
+                    return new ResultViewModel()
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Data = ex
+                    };                        
+                }                    
             }            
-            return mensagem;
         }            
         
-        public string Update(Atividade atividade)
+        public ResultViewModel Update(Atividade atividade)
         {
-            string mensagem = "";
-            mensagem = ValidaUpdate(atividade);
-            if (mensagem == "")
-            {
-                using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
-                {
-                    try
-                    {
-                        var query = @"Update Atividade Set 
-                                        Descricao   = @Descricao,
-                                        Responsavel = @Responsavel,
-                                        Setor       = @Setor,
-                                        CategoriaId = @CategoriaId,
-                                        Data        = @Data,                                        
-                                        Solicitante = @Solicitante,
-                                        Narrativa   = @Narrativa
-                                        Where Id = @Id";
+            var validate = ValidaUpdate(atividade);
+            if (!validate.Success) return validate;
 
-                        conexao.Execute(query, atividade);
-                        
-                        mensagem = "Atividade alterada com sucesso";
-                    }
-                    catch (Exception ex)
+            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+            {
+                try
+                {
+                    var query = @"Update Atividade Set 
+                                    Descricao   = @Descricao,
+                                    Responsavel = @Responsavel,
+                                    Setor       = @Setor,
+                                    CategoriaId = @CategoriaId,
+                                    Data        = @Data,                                        
+                                    Solicitante = @Solicitante,
+                                    Narrativa   = @Narrativa
+                                    Where Id = @Id";
+
+                    conexao.Execute(query, atividade);
+
+                    return new ResultViewModel()
                     {
-                        mensagem = ex.ToString();
-                    }                    
+                        Success = true,
+                        Message = "Atividade alterada com sucesso",
+                        Data = atividade
+                    };                    
                 }
-            }
-            return mensagem;
+                catch (Exception ex)
+                {
+                    return new ResultViewModel()
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Data = ex
+                    };
+                }                    
+            }            
         }
 
-        public string UpdateEncerra(Atividade atividade)
-        {
-            string mensagem = "";
-            //mensagem = AtividadeSQL.ValidaUpdate(atividade);
-            if (mensagem == "")
-            {
-                using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
-                {
-                    try
-                    {
-                        var query = @"Update Atividade Set                                         
-                                        DataEncerramento = @DataEncerramento
-                                        Where Id = @Id";
-                        conexao.Execute(query, atividade);
-                        mensagem = "Atividade alterada com sucesso";
-                    }
-                    catch (Exception ex)
-                    {
-                        mensagem = ex.ToString();
-                    }
-                }
-            }
-            return mensagem;
-        }
-
-        public string Reabrir(Atividade atividade)
-        {
-            string mensagem = "";
-            //mensagem = AtividadeSQL.ValidaUpdate(atividade);
-            if (mensagem == "")
-            {
-                using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
-                {
-                    try
-                    {
-                        var query = @"Update Atividade Set                                         
-                                        DataEncerramento = NULL
-                                        Where Id = @Id";
-                        conexao.Execute(query, atividade);
-                        mensagem = "Atividade alterada com sucesso";
-                    }
-                    catch (Exception ex)
-                    {
-                        mensagem = ex.ToString();
-                    }
-                }
-            }
-            return mensagem;
-        }
-
-        public string Delete(Atividade atividade)
+        public ResultViewModel UpdateEncerra(Atividade atividade)
         {            
-            string mensagem = "";
-
-            mensagem = ValidaDelete(atividade);
-            if (mensagem == "")
+            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {
-                using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+                try
                 {
-                    try
+                    var query = @"Update Atividade Set                                         
+                                    DataEncerramento = @DataEncerramento
+                                    Where Id = @Id";
+                    conexao.Execute(query, atividade);
+
+                    return new ResultViewModel()
                     {
-                        var query = "DELETE FROM Atividade WHERE Id =" + atividade.Id;
-                        conexao.Execute(query);
-                        mensagem = "Atividade eliminada com sucesso";
-                    }
-                    catch (Exception ex)
-                    {
-                        mensagem = ex.ToString();
-                    }                    
+                        Success = true,
+                        Message = "Atividade alterada com sucesso",
+                        Data = atividade
+                    };
                 }
-            }
-            return mensagem;
+                catch (Exception ex)
+                {
+                    return new ResultViewModel()
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Data = ex
+                    };
+                }
+            }         
         }
 
-        private string ValidaUpdate(Atividade atividade)
+        public ResultViewModel Reabrir(Atividade atividade)
         {
-            string mensagem = "";            
-            if (atividade.Descricao?.TrimEnd() == "asd")
-            {
-                mensagem = "erro ao alterar";
-            }
             
-            //Validacao para evitar erro no SQL
-            if (atividade.Data <= new DateTime(1800, 01, 01) || atividade.Data >= new DateTime(2100, 01, 01))
+            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {
-                mensagem = "Data deve estar entra 01/01/1800 e 01/01/2100";
-            }
+                try
+                {
+                    var query = @"Update Atividade Set                                         
+                                    DataEncerramento = NULL
+                                    Where Id = @Id";
+                    conexao.Execute(query, atividade);
 
+                    return new ResultViewModel()
+                    {
+                        Success = true,
+                        Message = "Atividade alterada com sucesso",
+                        Data = atividade
+                    };
+                }
+                catch (Exception ex)
+                {
+                    return new ResultViewModel()
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Data = ex
+                    };
+                }
+            }            
+        }
 
-            return mensagem;
-        }
-        private string ValidaDelete(Atividade atividade)
+        public ResultViewModel Delete(Atividade atividade)
         {
-            string mensagem = "";                        
-            return mensagem;
+            var validate = ValidaDelete(atividade);
+            if (!validate.Success) return validate;
+
+            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+            {
+                try
+                {
+                    var query = "DELETE FROM Atividade WHERE Id =" + atividade.Id;
+                    conexao.Execute(query);
+
+                    return new ResultViewModel()
+                    {
+                        Success = true,
+                        Message = "Atividade eliminada com sucesso",
+                        Data = atividade
+                    };                    
+                }
+                catch (Exception ex)
+                {
+                    return new ResultViewModel()
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Data = ex
+                    };
+                }                    
+            }            
         }
-        public string AlteraPrioridade(JsonPrioridade prioridade)
+
+        public ResultViewModel AlteraPrioridade(JsonPrioridade prioridade)
         {
-            string mensagem = "";
-            
             using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {
                 try
@@ -236,14 +242,57 @@ namespace InfrastructurePostgreSQL.Repositories
                                     Prioridade   = @Prioridade                                 
                                     Where Id = @Id";
                     conexao.Execute(query, prioridade);
-                    mensagem = "Atividade alterada com sucesso";
+
+                    return new ResultViewModel()
+                    {
+                        Success = true,
+                        Message = "Atividade alterada com sucesso",
+                        Data = prioridade
+                    };
                 }
                 catch (Exception ex)
                 {
-                    mensagem = ex.ToString();
+                    return new ResultViewModel()
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Data = ex
+                    };
                 }
             }            
-            return mensagem;
         }
+
+        private ResultViewModel ValidaUpdate(Atividade atividade)
+        {
+            var listErros = new List<string>();   
+            
+            if (atividade.Descricao?.TrimEnd() == "asd")
+            {
+                listErros.Add("Descrição deve ser diferente de 'asd'");
+            }
+            
+            //Validacao para evitar erro no SQL
+            if (atividade.Data <= new DateTime(1800, 01, 01) || atividade.Data >= new DateTime(2100, 01, 01))
+            {
+                listErros.Add("Data deve estar entra 01/01/1800 e 01/01/2100");                
+            }
+
+            return new ResultViewModel()
+            {
+                Success = listErros.Count() == 0,
+                Message = listErros.Count() > 0 ? "Ocorreram erros" : "",
+                Data = listErros
+            };            
+        }
+
+        private ResultViewModel ValidaDelete(Atividade atividade)
+        {
+            return new ResultViewModel()
+            {
+                Success = true,
+                Message = "",
+                Data = atividade
+            };            
+        }        
     }
 }

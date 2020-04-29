@@ -43,19 +43,6 @@ namespace InfrastructureMongoDB.Repositories
             mensagem = "Atividade inserida com sucesso";
 
             return mensagem;
-        }
-        public static string Update(string strconexao, Atividade atividade)
-        {            
-            string mensagem = "";
-            return mensagem;            
-        }
-
-        public static string Delete(string strconexao, Atividade atividade)
-        {            
-            string mensagem = "";
-
-            return mensagem;
         }        
     }
-
 }

@@ -30,49 +30,56 @@ namespace Api.Controllers
             IEnumerable<Categoria> ativs = categoriaService.Select();          
             return View(ativs);            
         }
-        [HttpPost]
-        public IActionResult Add(Categoria categ)
-        {            
-            string insert = categoriaService.Insert(categ);
-            TempData["Message"] = insert;
-            return RedirectToAction("Index");            
-        }
+
         [HttpGet]
         public IActionResult Add()
         {
             var model = new Categoria { };
-            return View(model);                     
+            return View(model);
         }
+
+        [HttpPost]
+        public IActionResult Add(Categoria categ)
+        {            
+            var result = categoriaService.Insert(categ);
+            TempData["Message"] = result.Message;
+            return RedirectToAction("Index");            
+        }        
+
         [HttpGet]
         public IActionResult Excluir(int id)
         {
             Categoria categ = categoriaService.SelectById(id);
             return View(categ);
         }
+
         [HttpPost]
         public IActionResult Excluir(Categoria categ)
         {
-            string delete = categoriaService.Delete(categ);
-            TempData["Message"] = delete;            
+            var result = categoriaService.Delete(categ);
+            TempData["Message"] = result.Message;            
             return RedirectToAction("Index");
         }
+
         [HttpGet]
         public IActionResult Detalhe(int id)
         {
             Categoria categ = categoriaService.SelectById(id);
             return View(categ);
         }
+
         [HttpGet]
         public IActionResult Editar(int id)
         {
             Categoria categ = categoriaService.SelectById(id);
             return View(categ);
         }
+
         [HttpPost]
         public IActionResult Editar(Categoria categ)
         {
-            string categoria = categoriaService.Update(categ);
-            TempData["Message"] = categoria;
+            var result = categoriaService.Update(categ);
+            TempData["Message"] = result.Message;
             return RedirectToAction("Index");
 
         }        

@@ -33,88 +33,97 @@ namespace Api.Controllers
             var ativs = atividadeService.Select();          
             return View(ativs);            
         }
+
         public IActionResult Encerrados()
         {
             var ativs = atividadeService.SelectEncerrados();
             return View(ativs);
         }
-        [HttpPost]
-        public IActionResult Add(Atividade atividade)
-        {            
-            var insert = atividadeService.Insert(atividade);
-            TempData["Message"] = insert;
-            return RedirectToAction("Index");            
-        }
+
         [HttpGet]
         public IActionResult Add()
         {
             ViewBag.Categoria = SelectListCategoria();
             var model = new Atividade { Responsavel = "Thiago", Setor = "TI", Data = DateTime.Now };
-            return View(model);                     
+            return View(model);
         }
+
+        [HttpPost]
+        public IActionResult Add(Atividade atividade)
+        {            
+            var result = atividadeService.Insert(atividade);
+            TempData["Message"] = result.Message;
+            return RedirectToAction("Index");            
+        }
+        
         [HttpGet]
         public IActionResult Excluir(int id)
         {
-            Atividade ativs = atividadeService.SelectById(id);
-            return View(ativs);
+            Atividade ativ = atividadeService.SelectById(id);
+            return View(ativ);
         }
+
         [HttpPost]
         public IActionResult Excluir(Atividade atividade)
         {
-            string delete = atividadeService.Delete(atividade);
-            TempData["Message"] = delete;            
+            var result = atividadeService.Delete(atividade);
+            TempData["Message"] = result.Message;            
             return RedirectToAction("Index");
         }
+
         [HttpGet]
         public IActionResult Detalhe(int id)
         {
-            Atividade ativs = atividadeService.SelectById(id);
-            return View(ativs);
+            Atividade ativ = atividadeService.SelectById(id);
+            return View(ativ);
         }
+
         [HttpGet]
         public IActionResult Editar(int id)
         {            
             ViewBag.Categoria = SelectListCategoria();
-            var ativs = atividadeService.SelectById(id);
-            return View(ativs);
+            var ativ = atividadeService.SelectById(id);
+            return View(ativ);
         }
+
         [HttpPost]
         public IActionResult Editar(Atividade atividade)
         {
-            string ativ = atividadeService.Update(atividade);
-            TempData["Message"] = ativ;
+            var result = atividadeService.Update(atividade);
+            TempData["Message"] = result.Message;
             return RedirectToAction("Index");
 
         }
+
         [HttpGet]
         public IActionResult Encerrar(int id)
-        {
-            ViewBag.Categoria = SelectListCategoria();
-            var ativs = atividadeService.SelectById(id);
-            ativs.DataEncerramento = DateTime.Now;
-            return View(ativs);
+        {            
+            var ativ = atividadeService.SelectById(id);
+            ativ.DataEncerramento = DateTime.Now;
+            return View(ativ);
         }
+
         [HttpPost]
         public IActionResult Encerrar(Atividade atividade)
         {
-            var ativ = atividadeService.UpdateEncerra(atividade);
-            TempData["Message"] = ativ;
+            var result = atividadeService.UpdateEncerra(atividade);
+            TempData["Message"] = result.Message;
             return RedirectToAction("Index");
 
         }
 
         [HttpGet]
         public IActionResult Reabrir(int id)
-        {
-            ViewBag.Categoria = SelectListCategoria();
-            var ativs = atividadeService.SelectById(id);            
-            return View(ativs);
+        {            
+            var ativ = atividadeService.SelectById(id);            
+            return View(ativ);
         }
+
         [HttpPost]
         public IActionResult Reabrir(Atividade atividade)
         {
-            var ativ = atividadeService.Reabrir(atividade);
-            TempData["Message"] = ativ;
+            var result = atividadeService.Reabrir(atividade);
+            TempData["Message"] = result.Message;
             return RedirectToAction("Encerrados");
         }
 
@@ -122,15 +131,15 @@ namespace Api.Controllers
         {            
             
             MailMessage msg = new MailMessage();
-            msg.To.Add(new MailAddress("thiago.kaiser@danicazipco.com.br", "thiago"));
-            msg.From = new MailAddress("site@danicazipco.com.br", "site");
+            msg.To.Add(new MailAddress("thiago.kaiser@a.com.br", "thiago"));
+            msg.From = new MailAddress("a@a.com.br", "a");
             msg.Subject = "This is a Test Mail";
             msg.Body = "This is a test message using Exchange";
             msg.IsBodyHtml = true;
 
             SmtpClient client = new SmtpClient();
             client.UseDefaultCredentials = false;
-            client.Credentials = new System.Net.NetworkCredential("site@danicazipco.com.br", "Ert@4321");
+            client.Credentials = new System.Net.NetworkCredential("a@a.com.br", "senha");
             client.Port = 587; // You can use Port 25 if 587 is blocked (mine is!)
             client.Host = "smtp.office365.com";
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
@@ -143,19 +152,12 @@ namespace Api.Controllers
         }        
 
         [HttpPost]
-        public IActionResult Atualizatable([FromBody] List<JsonPrioridade> lista)
+        public IActionResult AtualizaPrioridade([FromBody] List<JsonPrioridade> lista)
         {
-            string mensagem = "Error";
-            if (lista != null)
-            {
-                mensagem = atividadeService.AlteraPrioridade(lista);
-                return Json(mensagem);
-            }
-            else
-            {
-                return Json(mensagem);
-            }
-
+            if (lista == null) return Json("");                       
+            
+            var result = atividadeService.AlteraPrioridade(lista);
+            return Json(result.Message);
         }
 
         private List<SelectListItem> SelectListCategoria()

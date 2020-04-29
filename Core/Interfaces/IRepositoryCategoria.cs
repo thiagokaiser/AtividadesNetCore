@@ -1,4 +1,5 @@
 ﻿using Core.Models;
+using Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,8 +10,8 @@ namespace Core.Interfaces
     {
         IEnumerable<Categoria> Select();
         Categoria SelectById(int id);
-        string Insert(Categoria categ);
-        string Update(Categoria categ);
-        string Delete(Categoria categ);        
+        ResultViewModel Insert(Categoria categ);
+        ResultViewModel Update(Categoria categ);
+        ResultViewModel Delete(Categoria categ);        
     }
 }

@@ -6,116 +6,159 @@ using System.Diagnostics;
 using Dapper;
 using System.Data.SqlClient;
 using Core.Models;
+using Core.ViewModels;
+using Core.Interfaces;
 
 namespace InfrastructureSQL.Repositories
 {
-    public class CategoriaSQL
-    {       
-        public static IEnumerable<Categoria> Select(string strconexao)
+    public class CategoriaSQL : IRepositoryCategoria
+    {
+        private readonly string strconexao;
+
+        public CategoriaSQL(string strconexao)
+        {
+            this.strconexao = strconexao;
+        }
+
+        public IEnumerable<Categoria> Select()
         {                        
             using (SqlConnection conexao = new SqlConnection(strconexao))
             {
-                IEnumerable<Categoria> categ = conexao.Query<Categoria>("Select * from Categoria");
+                var categ = conexao.Query<Categoria>("Select * from Categoria");
                 return categ;
             }            
         }
 
-        public static Categoria SelectById(string strconexao, int id)
+        public Categoria SelectById(int id)
         {
             using (SqlConnection conexao = new SqlConnection(strconexao))
             {
-                Categoria categ = conexao.QueryFirst<Categoria>("Select * from Categoria WHERE Id = @Id", new { Id = id });
+                var categ = conexao.QueryFirst<Categoria>("Select * from Categoria WHERE Id = @Id", new { Id = id });
                 return categ;
             }
         }
 
-        public static string Insert(string strconexao, Categoria categ)
-        {            
-            string mensagem = "";
+        public ResultViewModel Insert(Categoria categ)
+        {
+            var validate = ValidaUpdate(categ);
+            if (!validate.Success) return validate;
 
-            mensagem = CategoriaSQL.ValidaUpdate(categ);
-            if (mensagem == "")
+            using (SqlConnection conexao = new SqlConnection(strconexao))
             {
-                using (SqlConnection conexao = new SqlConnection(strconexao))
+                try
                 {
-                    try
+                    var query = @"INSERT INTO Categoria(Descricao, Cor) 
+                                                VALUES(@Descricao,@Cor); 
+                                    SELECT CAST(SCOPE_IDENTITY() as INT);";
+                    conexao.Execute(query, categ);
+
+                    return new ResultViewModel()
                     {
-                        var query = @"INSERT INTO Categoria(Descricao, Cor) 
-                                                    VALUES(@Descricao,@Cor); 
-                                        SELECT CAST(SCOPE_IDENTITY() as INT);";
-                        conexao.Execute(query, categ);
-                        mensagem = "Atividade adicionada com sucesso";
-                    }
-                    catch (Exception ex)
-                    {
-                        mensagem = ex.ToString();
-                    }                    
+                        Success = true,
+                        Message = "Categoria adicionada com sucesso",
+                        Data = categ
+                    };
                 }
+                catch (Exception ex)
+                {
+                    return new ResultViewModel()
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Data = ex
+                    };
+                }                    
             }            
-            return mensagem;
         }             
-        public static string Update(string strconexao, Categoria categ)
+        public ResultViewModel Update(Categoria categ)
         {
-            string mensagem = "";
-            mensagem = CategoriaSQL.ValidaUpdate(categ);
-            if (mensagem == "")
+            var validate = ValidaUpdate(categ);
+            if (!validate.Success) return validate;
+
+            using (SqlConnection conexao = new SqlConnection(strconexao))
             {
-                using (SqlConnection conexao = new SqlConnection(strconexao))
+                try
                 {
-                    try
+                    var query = @"Update Categoria Set 
+                                    Descricao = @Descricao,
+                                    Cor       = @Cor                                        
+                                    Where Id = @Id";
+                    conexao.Execute(query, categ);
+
+                    return new ResultViewModel()
                     {
-                        var query = @"Update Categoria Set 
-                                        Descricao = @Descricao,
-                                        Cor       = @Cor                                        
-                                        Where Id = @Id";
-                        conexao.Execute(query, categ);
-                        mensagem = "Atividade alterada com sucesso";
-                    }
-                    catch (Exception ex)
-                    {
-                        mensagem = ex.ToString();
-                    }                    
+                        Success = true,
+                        Message = "Categoria alterada com sucesso",
+                        Data = categ
+                    };
                 }
-            }
-            return mensagem;
+                catch (Exception ex)
+                {
+                    return new ResultViewModel()
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Data = ex
+                    };
+                }                    
+            }            
         }
 
-        public static string Delete(string strconexao, Categoria categ)
-        {            
-            string mensagem = "";
-
-            mensagem = CategoriaSQL.ValidaDelete(categ);
-            if (mensagem == "")
-            {
-                using (SqlConnection conexao = new SqlConnection(strconexao))
-                {
-                    try
-                    {
-                        var query = "DELETE FROM Categoria WHERE Id =" + categ.Id;
-                        conexao.Execute(query);
-                        mensagem = "Atividade eliminada com sucesso";
-                    }
-                    catch (Exception ex)
-                    {
-                        mensagem = ex.ToString();
-                    }                    
-                }
-            }
-            return mensagem;
-        }
-        private static string ValidaUpdate(Categoria categ)
+        public ResultViewModel Delete(Categoria categ)
         {
-            string mensagem = "";            
+            var validate = ValidaDelete(categ);
+            if (!validate.Success) return validate;
+
+            using (SqlConnection conexao = new SqlConnection(strconexao))
+            {
+                try
+                {
+                    var query = "DELETE FROM Categoria WHERE Id =" + categ.Id;
+                    conexao.Execute(query);
+
+                    return new ResultViewModel()
+                    {
+                        Success = true,
+                        Message = "Categoria eliminada com sucesso",
+                        Data = categ
+                    };                    
+                }
+                catch (Exception ex)
+                {
+                    return new ResultViewModel()
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Data = ex
+                    };
+                }                    
+            }            
+        }
+
+        private ResultViewModel ValidaUpdate(Categoria categ)
+        {
+            var listErros = new List<string>();
             if (categ.Descricao?.TrimEnd() == "asd")
             {
-                mensagem = "erro ao alterar";
+                listErros.Add("Descrição deve ser diferente de 'asd'");
             }
-            return mensagem;
+
+            return new ResultViewModel()
+            {
+                Success = listErros.Count() == 0,
+                Message = listErros.Count() > 0 ? "Ocorreram erros" : "",
+                Data = listErros
+            };
         }
-        private static string ValidaDelete(Categoria categ)
+
+        private ResultViewModel ValidaDelete(Categoria categ)
         {
-            string mensagem = "";            
-            return mensagem;
-        }        
+            return new ResultViewModel()
+            {
+                Success = true,
+                Message = "",
+                Data = null
+            };
+        }
     }
 }

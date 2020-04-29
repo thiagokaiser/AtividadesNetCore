@@ -16,6 +16,7 @@ using Core.Services;
 using Core.Interfaces;
 using InfrastructurePostgreSQL.Repositories;
 using Core.Models;
+using InfrastructureSQL.Repositories;
 
 namespace Atividades
 {
@@ -38,10 +39,12 @@ namespace Atividades
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            var connectionString = Configuration.GetConnectionString("PostgreSQL");
+            var conStringPostgre = Configuration.GetConnectionString("PostgreSQL");
+            var conStringSQL = Configuration.GetConnectionString("SQL");
+            var conStringMongo = Configuration.GetConnectionString("MongoDB");
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(connectionString));
+                options.UseNpgsql(conStringPostgre));
             
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();            
@@ -50,9 +53,18 @@ namespace Atividades
 
             services.AddScoped<AtividadeService>();
             services.AddScoped<CategoriaService>();
-            services.AddScoped<IRepositoryAtividade>(x => new AtividadePostgreSQL(connectionString));
-            services.AddScoped<IRepositoryCategoria>(x => new CategoriaPostgreSQL(connectionString));
 
+            //PostgreSQL
+            //services.AddScoped<IRepositoryAtividade>(x => new AtividadePostgreSQL(conStringPostgre));
+            //services.AddScoped<IRepositoryCategoria>(x => new CategoriaPostgreSQL(conStringPostgre));
+
+            //SQL
+            services.AddScoped<IRepositoryAtividade>(x => new AtividadeSQL(conStringSQL));
+            services.AddScoped<IRepositoryCategoria>(x => new CategoriaSQL(conStringSQL));
+
+            //Mongo
+            //services.AddScoped<IRepositoryAtividade>(x => new AtividadeMongoDB(conStringMongo));
+            //services.AddScoped<IRepositoryCategoria>(x => new CategoriaMongoDB(conStringMongo));
             /*
             BsonClassMap.RegisterClassMap<Atividade>(cm =>
             {

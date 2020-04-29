@@ -6,6 +6,7 @@ using System.Diagnostics;
 using Core.Models;
 using System.Reflection;
 using Core.Interfaces;
+using Core.ViewModels;
 
 namespace Core.Services
 {
@@ -30,22 +31,22 @@ namespace Core.Services
             return categ;
         }
 
-        public string Insert(Categoria categ)
+        public ResultViewModel Insert(Categoria categ)
         {            
-            var mensagem = repository.Insert(categ);
-            return mensagem;
+            var result = repository.Insert(categ);
+            return result;
         }     
         
-        public string Update(Categoria categ)
+        public ResultViewModel Update(Categoria categ)
         {            
-            var mensagem = repository.Update(categ);                    
-            return mensagem;
+            var result = repository.Update(categ);                    
+            return result;
         }
 
-        public string Delete(Categoria categ)
+        public ResultViewModel Delete(Categoria categ)
         {            
-            var mensagem = repository.Delete(categ);                    
-            return mensagem;
+            var result = repository.Delete(categ);                    
+            return result;
         }        
     }
 }
