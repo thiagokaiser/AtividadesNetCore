@@ -7,6 +7,7 @@ using Core.Models;
 using System.Reflection;
 using Core.Interfaces;
 using Core.ViewModels;
+using Core.ViewModels.Atividade;
 
 namespace Core.Services
 {
@@ -70,7 +71,7 @@ namespace Core.Services
             var result = repository.Delete(atividade);
             return result;
         }
-        public ResultViewModel AlteraPrioridade(List<JsonPrioridade> lista)
+        public ResultViewModel AlteraPrioridade(List<PrioridadeAtividade> lista)
         {                        
             int priorid = 0;
             

@@ -9,6 +9,7 @@ using System.Reflection;
 using Core.Models;
 using Core.Interfaces;
 using Core.ViewModels;
+using Core.ViewModels.Atividade;
 
 namespace InfrastructurePostgreSQL.Repositories
 {
@@ -232,7 +233,7 @@ namespace InfrastructurePostgreSQL.Repositories
             }            
         }
 
-        public ResultViewModel AlteraPrioridade(JsonPrioridade prioridade)
+        public ResultViewModel AlteraPrioridade(PrioridadeAtividade prioridade)
         {
             using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
             {

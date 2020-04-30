@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
-namespace Core.Models
+namespace Core.ViewModels.Atividade
 {
-    public class JsonPrioridade
+    public class PrioridadeAtividade
     {                
         public int Id { get; set; }
         public int Prioridade { get; set; }

@@ -9,6 +9,7 @@ using Core.Models;
 using System.Data.SqlClient;
 using Core.ViewModels;
 using Core.Interfaces;
+using Core.ViewModels.Atividade;
 
 namespace InfrastructureSQL.Repositories
 {
@@ -233,7 +234,7 @@ namespace InfrastructureSQL.Repositories
             }            
         }        
 
-        public ResultViewModel AlteraPrioridade(JsonPrioridade prioridade)
+        public ResultViewModel AlteraPrioridade(PrioridadeAtividade prioridade)
         {            
             using (SqlConnection conexao = new SqlConnection(strconexao))
             {

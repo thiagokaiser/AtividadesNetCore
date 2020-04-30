@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using Core.Models;
 using Core.Interfaces;
 using Core.ViewModels;
+using Core.ViewModels.Atividade;
 
 namespace InfrastructureMongoDB.Repositories
 {
@@ -41,13 +42,15 @@ namespace InfrastructureMongoDB.Repositories
         }
 
         public IEnumerable<Atividade> Select()
-        {
-            return atividade.Find(x => x.DataEncerramento == null).ToList();
+        {            
+            return atividade.Find(x => x.DataEncerramento == new DateTime(01/01/0001))
+                .SortBy(x => x.Prioridade)
+                .ToList();
         }
 
         public IEnumerable<Atividade> SelectEncerrados()
         {
-            return atividade.Find<Atividade>(x => x.DataEncerramento != null).ToList();
+            return atividade.Find<Atividade>(x => x.DataEncerramento != new DateTime(01/01/0001)).ToList();
         }
 
         public Atividade SelectById(int id)
@@ -59,8 +62,12 @@ namespace InfrastructureMongoDB.Repositories
         {
             try
             {                
-                ativ.Categoria = categoria.Find<Categoria>(x => x.Id == ativ.CategoriaId).FirstOrDefault();
                 ativ.Id = GetNextSequence("ativid");
+                ativ.Categoria = categoria.Find<Categoria>(x => x.Id == ativ.CategoriaId).FirstOrDefault();
+                ativ.DataEncerramento = new DateTime(01/01/0001);
+                ativ.Prioridade = atividade.Find(x => x.DataEncerramento == new DateTime(01 / 01 / 0001))
+                                           .SortByDescending(x => x.Prioridade).FirstOrDefault().Prioridade + 1;
+
                 atividade.InsertOne(ativ);
                 
                 return new ResultViewModel()
@@ -109,7 +116,11 @@ namespace InfrastructureMongoDB.Repositories
         {
             try
             {
-                var update = Builders<Atividade>.Update.Set("DataEncerramento", ativ.DataEncerramento);
+                var update = Builders<Atividade>.Update.Combine(
+                                Builders<Atividade>.Update.Set("DataEncerramento", ativ.DataEncerramento),
+                                Builders<Atividade>.Update.Set("Prioridade", 0)
+                             );
+
                 atividade.UpdateOne(x => x.Id == ativ.Id, update);
                 
                 return new ResultViewModel()
@@ -134,7 +145,7 @@ namespace InfrastructureMongoDB.Repositories
         {
             try
             {
-                var update = Builders<Atividade>.Update.Set("DataEncerramento", "");
+                var update = Builders<Atividade>.Update.Set("DataEncerramento", new DateTime(01/01/0001));
                 atividade.UpdateOne(x => x.Id == ativ.Id, update);
                                 
                 return new ResultViewModel()
@@ -178,7 +189,7 @@ namespace InfrastructureMongoDB.Repositories
             }
         }
 
-        public ResultViewModel AlteraPrioridade(JsonPrioridade item)
+        public ResultViewModel AlteraPrioridade(PrioridadeAtividade item)
         {
             try
             {                

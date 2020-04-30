@@ -1,5 +1,6 @@
 ﻿using Core.Models;
 using Core.ViewModels;
+using Core.ViewModels.Atividade;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Core.Interfaces
         ResultViewModel UpdateEncerra(Atividade atividade);
         ResultViewModel Reabrir(Atividade atividade);
         ResultViewModel Delete(Atividade atividade);
-        ResultViewModel AlteraPrioridade(JsonPrioridade item);
+        ResultViewModel AlteraPrioridade(PrioridadeAtividade item);
 
     }
 }

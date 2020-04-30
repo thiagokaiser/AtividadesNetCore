@@ -13,6 +13,7 @@ using System.Net.Mail;
 using System.Net;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Core.Services;
+using Core.ViewModels.Atividade;
 
 namespace Api.Controllers
 {   
@@ -152,7 +153,7 @@ namespace Api.Controllers
         }        
 
         [HttpPost]
-        public IActionResult AtualizaPrioridade([FromBody] List<JsonPrioridade> lista)
+        public IActionResult AtualizaPrioridade([FromBody] List<PrioridadeAtividade> lista)
         {
             if (lista == null) return Json("");                       
             
