@@ -12,8 +12,10 @@ namespace Core.Interfaces
         IEnumerable<Atividade> Select();
         IEnumerable<Atividade> SelectEncerrados();
         Atividade SelectById(int id);
-        ResultViewModel Insert(Atividade atividade);
-        ResultViewModel Update(Atividade atividade);
+        EditAtividadeViewModel SelectByIdWithCateg(int id);
+        EditAtividadeViewModel editAtividadeViewModel();
+        ResultViewModel Insert(EditAtividadeViewModel atividade);
+        ResultViewModel Update(EditAtividadeViewModel atividade);
         ResultViewModel UpdateEncerra(Atividade atividade);
         ResultViewModel Reabrir(Atividade atividade);
         ResultViewModel Delete(Atividade atividade);

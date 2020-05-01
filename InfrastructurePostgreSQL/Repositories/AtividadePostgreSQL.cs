@@ -68,7 +68,33 @@ namespace InfrastructurePostgreSQL.Repositories
             }
         }
 
-        public ResultViewModel Insert(Atividade atividade)
+        public EditAtividadeViewModel SelectByIdWithCateg(int id)
+        {
+            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+            {
+                var ativ = conexao.Query<EditAtividadeViewModel>(@"
+                    Select * from Atividade WHERE Atividade.Id = @Id", new { Id = id }).FirstOrDefault();
+
+                var categs = conexao.Query<Categoria>("Select * from Categoria").ToList();
+                ativ.Categorias = categs;
+
+                return ativ;
+            }
+        }
+
+        public EditAtividadeViewModel editAtividadeViewModel()
+        {
+            using (NpgsqlConnection conexao = new NpgsqlConnection(strconexao))
+            {
+                var categs = conexao.Query<Categoria>("Select * from Categoria").ToList();
+                return new EditAtividadeViewModel()
+                {
+                    Categorias = categs
+                };
+            }            
+        }
+
+        public ResultViewModel Insert(EditAtividadeViewModel atividade)
         {
             var validate = ValidaUpdate(atividade);
             if (!validate.Success) return validate;
@@ -101,7 +127,7 @@ namespace InfrastructurePostgreSQL.Repositories
             }            
         }            
         
-        public ResultViewModel Update(Atividade atividade)
+        public ResultViewModel Update(EditAtividadeViewModel atividade)
         {
             var validate = ValidaUpdate(atividade);
             if (!validate.Success) return validate;
@@ -263,7 +289,7 @@ namespace InfrastructurePostgreSQL.Repositories
             }            
         }
 
-        private ResultViewModel ValidaUpdate(Atividade atividade)
+        private ResultViewModel ValidaUpdate(EditAtividadeViewModel atividade)
         {
             var listErros = new List<string>();   
             

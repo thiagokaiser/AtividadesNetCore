@@ -20,13 +20,11 @@ namespace Api.Controllers
     [Authorize]
     public class AtividadeController : Controller
     {
-        private readonly AtividadeService atividadeService;
-        private readonly CategoriaService categoriaService;
+        private readonly AtividadeService atividadeService;        
 
-        public AtividadeController(AtividadeService atividadeService, CategoriaService categoriaService)
+        public AtividadeController(AtividadeService atividadeService)
         {
-            this.atividadeService = atividadeService;
-            this.categoriaService = categoriaService;
+            this.atividadeService = atividadeService;            
         }        
 
         public IActionResult Index()
@@ -44,13 +42,19 @@ namespace Api.Controllers
         [HttpGet]
         public IActionResult Add()
         {
-            ViewBag.Categoria = SelectListCategoria();
-            var model = new Atividade { Responsavel = "Thiago", Setor = "TI", Data = DateTime.Now };
+            var model = atividadeService.editAtividadeViewModel();
+            
+            ViewBag.Categoria = SelectListCategoria(model.Categorias.ToList());
+
+            model.Responsavel = "Thiago";
+            model.Setor = "TI";
+            model.Data = DateTime.Now;
+            
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult Add(Atividade atividade)
+        public IActionResult Add(EditAtividadeViewModel atividade)
         {            
             var result = atividadeService.Insert(atividade);
             TempData["Message"] = result.Message;
@@ -81,14 +85,15 @@ namespace Api.Controllers
 
         [HttpGet]
         public IActionResult Editar(int id)
-        {            
-            ViewBag.Categoria = SelectListCategoria();
-            var ativ = atividadeService.SelectById(id);
+        {
+            var ativ = atividadeService.SelectByIdWithCateg(id);
+            ViewBag.Categoria = SelectListCategoria(ativ.Categorias);
+            
             return View(ativ);
         }
 
         [HttpPost]
-        public IActionResult Editar(Atividade atividade)
+        public IActionResult Editar(EditAtividadeViewModel atividade)
         {
             var result = atividadeService.Update(atividade);
             TempData["Message"] = result.Message;
@@ -126,30 +131,6 @@ namespace Api.Controllers
             var result = atividadeService.Reabrir(atividade);
             TempData["Message"] = result.Message;
             return RedirectToAction("Encerrados");
-        }
-
-        public IActionResult EnviaEmail()
-        {            
-            
-            MailMessage msg = new MailMessage();
-            msg.To.Add(new MailAddress("thiago.kaiser@a.com.br", "thiago"));
-            msg.From = new MailAddress("a@a.com.br", "a");
-            msg.Subject = "This is a Test Mail";
-            msg.Body = "This is a test message using Exchange";
-            msg.IsBodyHtml = true;
-
-            SmtpClient client = new SmtpClient();
-            client.UseDefaultCredentials = false;
-            client.Credentials = new System.Net.NetworkCredential("a@a.com.br", "senha");
-            client.Port = 587; // You can use Port 25 if 587 is blocked (mine is!)
-            client.Host = "smtp.office365.com";
-            client.DeliveryMethod = SmtpDeliveryMethod.Network;
-            client.EnableSsl = true;
-            
-            client.Send(msg);                
-            
-            TempData["Message"] = "Email enviado";
-            return RedirectToAction("Index");
         }        
 
         [HttpPost]
@@ -161,10 +142,9 @@ namespace Api.Controllers
             return Json(result.Message);
         }
 
-        private List<SelectListItem> SelectListCategoria()
+        private List<SelectListItem> SelectListCategoria(List<Categoria> categorias)
         {
-            List<SelectListItem> categs = new List<SelectListItem>();
-            var categorias = categoriaService.Select().ToList();
+            List<SelectListItem> categs = new List<SelectListItem>();            
             foreach (var categ in categorias)
             {
                 categs.Add(new SelectListItem { Value = categ.Id.ToString(), Text = categ.Descricao });

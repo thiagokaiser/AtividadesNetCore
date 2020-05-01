@@ -60,12 +60,12 @@ namespace Atividades
             //services.AddScoped<IRepositoryCategoria>(x => new CategoriaPostgreSQL(conStringPostgre));
 
             //SQL
-            //services.AddScoped<IRepositoryAtividade>(x => new AtividadeSQL(conStringSQL));
-            //services.AddScoped<IRepositoryCategoria>(x => new CategoriaSQL(conStringSQL));
+            services.AddScoped<IRepositoryAtividade>(x => new AtividadeSQL(conStringSQL));
+            services.AddScoped<IRepositoryCategoria>(x => new CategoriaSQL(conStringSQL));
 
             //Mongo
-            services.AddScoped<IRepositoryAtividade>(x => new AtividadeMongoDB(conStringMongo));
-            services.AddScoped<IRepositoryCategoria>(x => new CategoriaMongoDB(conStringMongo));
+            //services.AddScoped<IRepositoryAtividade>(x => new AtividadeMongoDB(conStringMongo));
+            //services.AddScoped<IRepositoryCategoria>(x => new CategoriaMongoDB(conStringMongo));
             
         }
 

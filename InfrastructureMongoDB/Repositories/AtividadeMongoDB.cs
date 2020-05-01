@@ -15,7 +15,7 @@ namespace InfrastructureMongoDB.Repositories
 {
     public class AtividadeMongoDB : IRepositoryAtividade
     {
-        private readonly IMongoCollection<Atividade> atividade;
+        private readonly IMongoCollection<Atividade> atividade;        
         private readonly IMongoCollection<Counters> counters;
         private readonly IMongoCollection<Categoria> categoria;
 
@@ -24,7 +24,7 @@ namespace InfrastructureMongoDB.Repositories
             var client = new MongoClient(strconexao);
             var database = client.GetDatabase("AtividadesDB");
 
-            atividade = database.GetCollection<Atividade>("Atividade");
+            atividade = database.GetCollection<Atividade>("Atividade");            
             counters = database.GetCollection<Counters>("Counters");
             categoria = database.GetCollection<Categoria>("Categoria");
         }
@@ -58,17 +58,54 @@ namespace InfrastructureMongoDB.Repositories
             return atividade.Find<Atividade>(x => x.Id == id).FirstOrDefault();
         }
 
-        public ResultViewModel Insert(Atividade ativ)
+        public EditAtividadeViewModel SelectByIdWithCateg(int id)
+        {
+            var ativ = atividade.Find<Atividade>(x => x.Id == id).FirstOrDefault();
+            var categ = categoria.Find<Categoria>(x => true).ToList();
+
+            var result = new EditAtividadeViewModel()
+            {
+                Id = ativ.Id,
+                Descricao = ativ.Descricao,
+                Data = ativ.Data,
+                Responsavel = ativ.Responsavel,
+                Setor = ativ.Setor,
+                Solicitante = ativ.Solicitante,
+                Narrativa = ativ.Narrativa,
+                CategoriaId = ativ.CategoriaId,
+                Categorias = categ
+            };
+
+            return result;
+        }
+
+        public EditAtividadeViewModel editAtividadeViewModel()
+        {
+            return new EditAtividadeViewModel()
+            {
+                Categorias = categoria.Find<Categoria>(x => true).ToList()
+            };
+        }
+
+        public ResultViewModel Insert(EditAtividadeViewModel ativ)
         {
             try
-            {                
-                ativ.Id = GetNextSequence("ativid");
-                ativ.Categoria = categoria.Find<Categoria>(x => x.Id == ativ.CategoriaId).FirstOrDefault();
-                ativ.DataEncerramento = new DateTime(01/01/0001);
-                ativ.Prioridade = atividade.Find(x => x.DataEncerramento == new DateTime(01 / 01 / 0001))
-                                           .SortByDescending(x => x.Prioridade).FirstOrDefault().Prioridade + 1;
-
-                atividade.InsertOne(ativ);
+            {
+                atividade.InsertOne(new Atividade()
+                {
+                    Id = GetNextSequence("ativid"),
+                    Data = ativ.Data,
+                    Descricao = ativ.Descricao,
+                    Responsavel = ativ.Responsavel,
+                    Setor = ativ.Setor,
+                    Solicitante = ativ.Solicitante,
+                    Narrativa = ativ.Narrativa,
+                    DataEncerramento = new DateTime(01 / 01 / 0001),
+                    CategoriaId = ativ.CategoriaId,
+                    Categoria = categoria.Find<Categoria>(x => x.Id == ativ.CategoriaId).FirstOrDefault(),
+                    Prioridade = atividade.Find(x => x.DataEncerramento == new DateTime(01 / 01 / 0001))
+                                          .SortByDescending(x => x.Prioridade).FirstOrDefault().Prioridade + 1
+                });
                 
                 return new ResultViewModel()
                 {
@@ -88,12 +125,23 @@ namespace InfrastructureMongoDB.Repositories
             }
         }
 
-        public ResultViewModel Update(Atividade ativ)
+        public ResultViewModel Update(EditAtividadeViewModel ativ)
         {
             try
-            {
-                ativ.Categoria = categoria.Find<Categoria>(x => x.Id == ativ.CategoriaId).FirstOrDefault();
-                atividade.ReplaceOne(x => x.Id == ativ.Id, ativ);
+            {                
+                var update = Builders<Atividade>.Update.Combine(
+                                Builders<Atividade>.Update.Set("Data", ativ.Data),
+                                Builders<Atividade>.Update.Set("Descricao", ativ.Descricao),
+                                Builders<Atividade>.Update.Set("Responsavel", ativ.Responsavel),
+                                Builders<Atividade>.Update.Set("Setor", ativ.Setor),
+                                Builders<Atividade>.Update.Set("Solicitante", ativ.Solicitante),
+                                Builders<Atividade>.Update.Set("Narrativa", ativ.Narrativa),
+                                Builders<Atividade>.Update.Set("CategoriaId", ativ.CategoriaId),
+                                Builders<Atividade>.Update.Set("Categoria", categoria.Find<Categoria>(x => x.Id == ativ.CategoriaId).FirstOrDefault())
+                             );               
+                
+                atividade.UpdateOne(x => x.Id == ativ.Id, update);
+
                 return new ResultViewModel()
                 {
                     Success = true,
@@ -212,6 +260,6 @@ namespace InfrastructureMongoDB.Repositories
                     Data = ex
                 };
             }
-        }
+        }        
     }
 }

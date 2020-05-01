@@ -27,50 +27,58 @@ namespace Core.Services
         }
 
         public IEnumerable<Atividade> SelectEncerrados()
-        {
-            
+        {            
             var ativs = repository.SelectEncerrados();    
             return ativs;
         }
 
         public Atividade SelectById(int id)
-        {
-            
+        {            
             var ativ = repository.SelectById(id);            
             return ativ;
         }
 
-        public ResultViewModel Insert(Atividade atividade)
+        public EditAtividadeViewModel SelectByIdWithCateg(int id)
         {
-            
+            var ativ = repository.SelectByIdWithCateg(id);
+            return ativ;
+        }
+
+        public EditAtividadeViewModel editAtividadeViewModel()
+        {
+            return repository.editAtividadeViewModel();
+        }
+
+        public ResultViewModel Insert(EditAtividadeViewModel atividade)
+        {            
             var result = repository.Insert(atividade);            
             return result;
         }     
         
-        public ResultViewModel Update(Atividade atividade)
+        public ResultViewModel Update(EditAtividadeViewModel atividade)
         {
-
             var result = repository.Update(atividade);
             return result;
         }
 
         public ResultViewModel UpdateEncerra(Atividade atividade)
-        {
-            
+        {            
             var result = repository.UpdateEncerra(atividade);
             return result;
         }
+
         public ResultViewModel Reabrir(Atividade atividade)
-        {
-            
+        {            
             var result = repository.Reabrir(atividade);
             return result;
         }
+
         public ResultViewModel Delete(Atividade atividade)
         {
             var result = repository.Delete(atividade);
             return result;
         }
+
         public ResultViewModel AlteraPrioridade(List<PrioridadeAtividade> lista)
         {                        
             int priorid = 0;

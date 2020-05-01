@@ -70,7 +70,33 @@ namespace InfrastructureSQL.Repositories
             }
         }
 
-        public ResultViewModel Insert(Atividade atividade)
+        public EditAtividadeViewModel SelectByIdWithCateg(int id)
+        {
+            using (SqlConnection conexao = new SqlConnection(strconexao))
+            {
+                var ativ = conexao.Query<EditAtividadeViewModel>(@"
+                    Select * from Atividade WHERE Atividade.Id = @Id", new { Id = id }).FirstOrDefault();
+
+                var categs = conexao.Query<Categoria>("Select * from Categoria").ToList();
+                ativ.Categorias = categs;
+
+                return ativ;
+            }
+        }
+
+        public EditAtividadeViewModel editAtividadeViewModel()
+        {
+            using (SqlConnection conexao = new SqlConnection(strconexao))
+            {
+                var categs = conexao.Query<Categoria>("Select * from Categoria").ToList();
+                return new EditAtividadeViewModel()
+                {
+                    Categorias = categs
+                };
+            }
+        }
+
+        public ResultViewModel Insert(EditAtividadeViewModel atividade)
         {
             var validate = ValidaUpdate(atividade);
             if (!validate.Success) return validate;
@@ -103,7 +129,7 @@ namespace InfrastructureSQL.Repositories
                 }                    
             }            
         }             
-        public ResultViewModel Update(Atividade atividade)
+        public ResultViewModel Update(EditAtividadeViewModel atividade)
         {
             var validate = ValidaUpdate(atividade);
             if (!validate.Success) return validate;
@@ -264,7 +290,7 @@ namespace InfrastructureSQL.Repositories
             }                        
         }
 
-        private ResultViewModel ValidaUpdate(Atividade atividade)
+        private ResultViewModel ValidaUpdate(EditAtividadeViewModel atividade)
         {
             var listErros = new List<string>();
 
@@ -295,6 +321,6 @@ namespace InfrastructureSQL.Repositories
                 Message = "",
                 Data = atividade
             };
-        }
+        }        
     }
 }
